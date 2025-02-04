@@ -11,7 +11,8 @@ type Message = {
   content: string;
 };
 
-const API_BASE = 'http://localhost:3000/'; // replace with your backend URL
+// https://chatbot-backend-t8bw.onrender.com
+const API_BASE = 'http://localhost:8000'; // replace with your backend URL
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -33,11 +34,14 @@ export default function ChatWidget() {
       setUserId(storedUser);
       fetchConversations(storedUser);
     } else {
-      fetch(`/api/assignUserId`, { method: 'GET', headers: { 'Content-Type': 'application/json' } })
+      fetch(`${API_BASE}/api/assign_user`, { method: 'GET', headers: { 'Content-Type': 'application/json' } })
         .then((res) => res.json())
         .then((data) => {
-          setUserId(data.user_id);
-          localStorage.setItem('chat_user_id', data.user_id);
+          console.log(data);
+          if (data.user_id) {
+            setUserId(data.user_id);
+            localStorage.setItem('chat_user_id', data.user_id);
+          }
         })
         .catch((err) => console.error('Error assigning user:', err));
     }
@@ -45,7 +49,7 @@ export default function ChatWidget() {
 
   // Retrieve previous conversations.
   const fetchConversations = (user: string) => {
-    fetch(`${API_BASE}/conversations?user_id=${user}`)
+    fetch(`${API_BASE}/api/conversations?user_id=${user}`)
       .then((res) => res.json())
       .then((data) => setMessages(data.conversations))
       .catch((err) => console.error('Error fetching conversations:', err));
@@ -70,7 +74,7 @@ export default function ChatWidget() {
     // setIsTyping(true);
 
     try {
-      const response = await fetch(`${API_BASE}/chat`, {
+      const response = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, message: userMessage.content }),
