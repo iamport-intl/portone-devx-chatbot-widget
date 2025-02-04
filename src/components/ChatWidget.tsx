@@ -77,7 +77,7 @@ export default function ChatWidget() {
       const response = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, message: userMessage.content }),
+        body: JSON.stringify({ conversation_id: "", user_id: userId, message: userMessage.content }),
       });
 
       // Process streaming response.
@@ -87,7 +87,14 @@ export default function ChatWidget() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          botContent += new TextDecoder().decode(value);
+          let stringValue = new TextDecoder().decode(value);
+          stringValue = stringValue.replace("data: ", "");
+          console.log(stringValue);
+          const jsonValue = JSON.parse(stringValue);
+          console.log(jsonValue);
+          if (jsonValue.data) {
+            botContent += jsonValue.data;
+          }
           // Optionally, update the bot message in realtime.
           setMessages((prev) =>
             prev.map((msg) =>
