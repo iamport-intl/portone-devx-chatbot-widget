@@ -17,12 +17,13 @@ export async function fetchConversations(userId: string) {
 export async function sendMessage(
   userId: string,
   message: string,
+  conversationId: string = "",
   onPartialUpdate?: (partial: string) => void
 ): Promise<string> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ conversation_id: '', user_id: userId, message }),
+    body: JSON.stringify({ conversation_id: conversationId, user_id: userId, message }),
   });
   
   let botContent = '';

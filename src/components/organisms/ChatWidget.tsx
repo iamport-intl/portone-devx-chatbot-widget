@@ -50,12 +50,7 @@ export default function ChatWidget() {
     setInput('');
 
     try {
-      const botContent = await apiSendMessage(userId, userMessage.content, (partialContent) => {
-        // Update partial content if desired.
-        setMessages((prev) =>
-          prev.map((msg) => (msg.id === 'bot_temp' ? { ...msg, content: partialContent } : msg))
-        );
-      });
+      const botContent = await apiSendMessage(userId, userMessage.content);
 
       // Replace typing indicator with the final bot message.
       setMessages((prev) =>
@@ -77,9 +72,13 @@ export default function ChatWidget() {
         <div className="fixed bottom-20 right-4 w-2/5 h-1/2 bg-white border border-gray-200 rounded-lg shadow-xl flex flex-col overflow-hidden">
           <ChatHeader title="Chatbot" onClose={() => setOpen(false)} />
           <MessageList messages={messages} />
+
           <div className="p-4 border-t border-gray-200">
-            <h3 className="text-black font-semibold text-lg pb-3">Hello! How can I help you today?</h3>
-            {/* Additional quick action buttons can be added here */}
+            {!messages.some(msg => msg.role === 'user') && (
+              <h3 className="text-black font-semibold text-lg pb-3">
+                Hello! How can I help you today?
+              </h3>
+            )}
             <InputField
               value={input}
               placeholder="Type your message..."
