@@ -19,7 +19,7 @@ export async function sendMessage(
   message: string,
   conversationId: string = "",
   onPartialUpdate?: (partial: string) => void
-): Promise<string> {
+): Promise<{ content: string; conversationId: string }> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -27,6 +27,8 @@ export async function sendMessage(
   });
   
   let botContent = '';
+  let finalConversationId = conversationId;
+  
   if (response.body) {
     const reader = response.body.getReader();
     while (true) {
@@ -34,11 +36,14 @@ export async function sendMessage(
       if (done) break;
       const stringValue = new TextDecoder().decode(value).replace('data: ', '');
       const jsonValue = JSON.parse(stringValue);
-      if (jsonValue.data) {
+      
+      if (jsonValue.event === 'done') {
+        finalConversationId = jsonValue.conversation_id;
+      } else if (jsonValue.data) {
         botContent += jsonValue.data;
         if (onPartialUpdate) onPartialUpdate(botContent);
       }
     }
   }
-  return botContent;
+  return { content: botContent, conversationId: finalConversationId };
 }

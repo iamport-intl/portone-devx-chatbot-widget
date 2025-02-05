@@ -19,6 +19,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,14 +46,18 @@ export default function ChatWidget() {
     if (!input.trim() || !userId) return;
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input.trim() };
 
-    // Add user message and a typing indicator.
     setMessages((prev) => [...prev, userMessage, { id: 'indicator', role: 'indicator', content: 'Bot is typing...' }]);
     setInput('');
 
     try {
-      const botContent = await apiSendMessage(userId, userMessage.content);
+      const { content: botContent, conversationId: newConversationId } = await apiSendMessage(
+        userId,
+        userMessage.content,
+        conversationId
+      );
 
-      // Replace typing indicator with the final bot message.
+      setConversationId(newConversationId);
+
       setMessages((prev) =>
         prev.filter((msg) => msg.id !== 'indicator' && msg.id !== 'bot_temp').concat({
           id: Date.now().toString(),
