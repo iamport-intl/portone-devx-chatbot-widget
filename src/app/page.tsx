@@ -1,10 +1,9 @@
-// src/app/page.tsx
-import ChatWidget from '@/components/ChatWidget';
+import ChatPage from '@/pages/ChatPage';
 
 export default function Home() {
   return (
     <div>
-      <ChatWidget />
+      <ChatPage />
     </div>
   );
 }
