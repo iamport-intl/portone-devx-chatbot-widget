@@ -45,25 +45,38 @@ export default function ChatWidget() {
   const handleSendMessage = async () => {
     if (!input.trim() || !userId) return;
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input.trim() };
+    const botMessageId = (Date.now() + 1).toString();
+    // Create initial bot message with typing indicator
+    const initialBotMessage: Message = { id: botMessageId, role: 'indicator', content: 'Typing...' };
 
-    setMessages((prev) => [...prev, userMessage, { id: 'indicator', role: 'indicator', content: 'Bot is typing...' }]);
+    // Add both user message and initial bot message
+    setMessages((prev) => [...prev, userMessage, initialBotMessage]);
     setInput('');
 
     try {
       const { content: botContent, conversationId: newConversationId } = await apiSendMessage(
         userId,
         userMessage.content,
-        conversationId
+        conversationId,
+        (partial: string) => {
+          // When we get first partial data, change role to 'bot' and set the content
+          setMessages((prev) =>
+            prev.map((msg) => 
+              msg.id === botMessageId 
+                ? { ...msg, role: 'bot', content: partial }
+                : msg
+            )
+          );
+        }
       );
 
       setConversationId(newConversationId);
 
+      // Update with final message content
       setMessages((prev) =>
-        prev.filter((msg) => msg.id !== 'indicator' && msg.id !== 'bot_temp').concat({
-          id: Date.now().toString(),
-          role: 'bot',
-          content: botContent,
-        })
+        prev.map((msg) =>
+          msg.id === botMessageId ? { ...msg, role: 'bot', content: botContent } : msg
+        )
       );
     } catch (error) {
       console.error('Error sending message:', error);
