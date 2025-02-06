@@ -80,7 +80,7 @@ export default function ChatWidget() {
     setIsLoading(true);
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: messageText };
     const botMessageId = (Date.now() + 1).toString();
-    
+
     const initialBotMessage: Message = { id: botMessageId, role: 'indicator', content: 'Typing...' };
 
     setMessages((prev) => [...prev, userMessage, initialBotMessage]);
@@ -94,7 +94,7 @@ export default function ChatWidget() {
         (partial: string) => {
           setMessages((prev) =>
             prev.map((msg) =>
-              msg.id === botMessageId 
+              msg.id === botMessageId
                 ? { ...msg, role: 'bot', content: partial }
                 : msg
             )
@@ -141,9 +141,9 @@ export default function ChatWidget() {
               <MessageList messages={messages} endRef={messagesEndRef} />
               {!messages.some(msg => msg.role === 'user') && (
                 <InitialPrompts onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
-              )} 
+              )}
               <div className="p-4 bg-white border-t">
-                
+
                 <div className="flex items-center gap-2">
                   <InputField
                     value={input}
@@ -152,13 +152,21 @@ export default function ChatWidget() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={isLoading}
                   />
-                  <button 
-                    onClick={() => handleSendMessage()}
-                    disabled={isLoading}
-                    className="p-4 bg-[#fc6b2d] text-white rounded-lg hover:bg-[#e85d1f] disabled:opacity-50"
-                  >
-                    →
-                  </button>
+                  <div className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer" aria-disabled={isLoading}
+                    style={{
+                      opacity: isLoading ? 0.5 : 1,
+                      cursor: isLoading ? 'not-allowed' : 'pointer',
+                    }}
+                    onClick={() => {
+                      if (!isLoading) {
+                        handleSendMessage();
+                      }
+                    }}>
+                    <img
+                      src="/send.svg"
+                      className="w-5 h-5 text-white"
+                    />
+                  </div>
                 </div>
               </div>
             </>
