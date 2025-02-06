@@ -93,7 +93,7 @@ export default function ChatWidget() {
       {open && (
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader title="Welcome to PortOne Support" onClose={() => setOpen(false)} />
-          <MessageList messages={messages} />
+          <MessageList messages={messages} endRef={messagesEndRef} />
           
           <div className="p-4 bg-white border-t">
             {!messages.some(msg => msg.role === 'user') && (
@@ -125,7 +125,6 @@ export default function ChatWidget() {
                 →
               </button>
             </div>
-            <div ref={messagesEndRef} />
           </div>
         </div>
       )}

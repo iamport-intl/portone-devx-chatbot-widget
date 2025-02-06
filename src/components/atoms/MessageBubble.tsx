@@ -7,13 +7,17 @@ type MessageBubbleProps = {
 };
 
 export default function MessageBubble({ role, content }: MessageBubbleProps) {
+  const alignmentClasses = {
+    user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
+    bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
+    indicator: 'mx-auto italic text-gray-500'
+  };
+
   return (
     <div
       className={clsx(
         'p-3 rounded-xl mb-3 relative max-w-[85%]',
-        role === 'user' && 'bg-[#fc6b2d1a] float-right chat-bubble-user mr-4',
-        role === 'bot' && 'bg-gray-50 float-left chat-bubble-bot ml-4',
-        role === 'indicator' && 'italic text-gray-500 mx-auto'
+        alignmentClasses[role]
       )}
     >
       {role === 'bot' ? <ReactMarkdown>{content}</ReactMarkdown> : content}
