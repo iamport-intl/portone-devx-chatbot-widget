@@ -5,6 +5,7 @@ import ChatHeader from "../molecules/ChatHeader"
 import MessageList from "../molecules/MessageList"
 import InputField from "../atoms/InputField"
 import ChatButton from "../atoms/ChatButton"
+import InitialPrompts from "../molecules/InitialPrompts"
 import { assignUser, fetchConversations, sendMessage as apiSendMessage } from "../../services/chatService"
 
 
@@ -43,15 +44,15 @@ export default function ChatWidget() {
     }
   }, []);
 
-  const handleSendMessage = async () => {
-    if (!input.trim() || !userId || isLoading) return;
+  const handleSendMessage = async (messageOverride?: string) => {
+    const messageText = messageOverride !== undefined ? messageOverride.trim() : input.trim();
+    if (!messageText || !userId || isLoading) return;
     setIsLoading(true);
-    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input.trim() };
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: messageText };
     const botMessageId = (Date.now() + 1).toString();
-    // Create initial bot message with typing indicator
+    
     const initialBotMessage: Message = { id: botMessageId, role: 'indicator', content: 'Typing...' };
 
-    // Add both user message and initial bot message
     setMessages((prev) => [...prev, userMessage, initialBotMessage]);
     setInput('');
 
@@ -61,9 +62,8 @@ export default function ChatWidget() {
         userMessage.content,
         conversationId,
         (partial: string) => {
-          // When we get first partial data, change role to 'bot' and set the content
           setMessages((prev) =>
-            prev.map((msg) => 
+            prev.map((msg) =>
               msg.id === botMessageId 
                 ? { ...msg, role: 'bot', content: partial }
                 : msg
@@ -74,7 +74,6 @@ export default function ChatWidget() {
 
       setConversationId(newConversationId);
 
-      // Update with final message content
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botMessageId ? { ...msg, role: 'bot', content: botContent } : msg
@@ -94,21 +93,11 @@ export default function ChatWidget() {
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader title="Welcome to PortOne Support" onClose={() => setOpen(false)} />
           <MessageList messages={messages} endRef={messagesEndRef} />
-          
+          {!messages.some(msg => msg.role === 'user') && (
+            <InitialPrompts onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
+          )} 
           <div className="p-4 bg-white border-t">
-            {!messages.some(msg => msg.role === 'user') && (
-              <div className="space-y-2 mb-4">
-                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
-                  How to use PortOne for your Indian Shopify store
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
-                  I am getting Amount Limit error. What does it mean?
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
-                  How to activate my account
-                </div>
-              </div>
-            )}
+            
             <div className="flex items-center gap-2">
               <InputField
                 value={input}
@@ -118,7 +107,7 @@ export default function ChatWidget() {
                 disabled={isLoading}
               />
               <button 
-                onClick={handleSendMessage}
+                onClick={() => handleSendMessage()}
                 disabled={isLoading}
                 className="p-4 bg-[#fc6b2d] text-white rounded-lg hover:bg-[#e85d1f] disabled:opacity-50"
               >
