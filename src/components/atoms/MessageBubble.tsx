@@ -10,7 +10,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
   const alignmentClasses = {
     user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
     bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
-    indicator: 'mx-auto italic text-gray-500'
+    indicator: 'self-start ml-4'
   };
 
   return (
@@ -20,7 +20,16 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
         alignmentClasses[role]
       )}
     >
-      {role === 'bot' ? <ReactMarkdown>{content}</ReactMarkdown> : content}
+      {role === 'bot' && <ReactMarkdown>{content}</ReactMarkdown>}
+      {role === 'indicator' && (
+        <img
+          src="/typing.gif"
+          alt="Typing..."
+          className="w-10 h-5 object-contain"
+          style={{ imageRendering: 'auto' }}
+        />
+      )}
+      {role === 'user' && content}
     </div>
   );
 }
