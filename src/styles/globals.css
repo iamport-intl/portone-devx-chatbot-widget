@@ -44,3 +44,7 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.chat-bubble-bot a {
+  color: blue;
+}

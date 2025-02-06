@@ -25,23 +25,44 @@ export async function sendMessage(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ conversation_id: conversationId, user_id: userId, message }),
   });
-  
+
   let botContent = '';
   let finalConversationId = conversationId;
-  
+  const decoder = new TextDecoder();
+  let buffer = '';
+
   if (response.body) {
     const reader = response.body.getReader();
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      const stringValue = new TextDecoder().decode(value).replace('data: ', '');
-      const jsonValue = JSON.parse(stringValue);
       
-      if (jsonValue.event === 'done') {
-        finalConversationId = jsonValue.conversation_id;
-      } else if (jsonValue.data) {
-        botContent += jsonValue.data;
-        if (onPartialUpdate) onPartialUpdate(botContent);
+      // Append new chunk to buffer
+      buffer += decoder.decode(value, { stream: true });
+
+      // Split the buffer by newline to process each complete line separately.
+      const lines = buffer.split('\n');
+      // Retain the last partial line in the buffer if it doesn't end with a newline.
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) continue;
+        // Process only lines beginning with "data:"
+        if (trimmedLine.startsWith('data:')) {
+          const jsonStr = trimmedLine.replace(/^data:\s*/, '');
+          try {
+            const jsonValue = JSON.parse(jsonStr);
+            if (jsonValue.event === 'done') {
+              finalConversationId = jsonValue.conversation_id;
+            } else if (jsonValue.data) {
+              botContent += jsonValue.data;
+              if (onPartialUpdate) onPartialUpdate(botContent);
+            }
+          } catch (e) {
+            console.error("Error parsing JSON:", e, "in line:", trimmedLine);
+          }
+        }
       }
     }
   }
