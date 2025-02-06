@@ -1,4 +1,5 @@
-import ReactMarkdown from 'react-markdown';
+import React from 'react';
+import MarkdownRenderer from './MarkdownRenderer';
 import clsx from 'clsx';
 
 type MessageBubbleProps = {
@@ -20,7 +21,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
         alignmentClasses[role]
       )}
     >
-      {role === 'bot' && <ReactMarkdown>{content}</ReactMarkdown>}
+      {role === 'bot' && <MarkdownRenderer content={content} />}
       {role === 'indicator' && (
         <img
           src="/typing.gif"
