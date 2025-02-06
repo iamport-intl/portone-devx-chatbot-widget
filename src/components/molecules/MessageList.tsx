@@ -12,10 +12,12 @@ type MessageListProps = {
 
 export default function MessageList({ messages }: MessageListProps) {
   return (
-    <div className="flex-1 p-3 overflow-y-auto space-y-2">
-      {messages.map((msg, index) => (
-        <MessageBubble key={`${msg.id}-${index}`} role={msg.role} content={msg.content} />
-      ))}
+    <div className="flex-1 p-3 overflow-y-auto space-y-2 flex flex-col">
+      <div className="flex-1">
+        {messages.map((msg, index) => (
+          <MessageBubble key={`${msg.id}-${index}`} role={msg.role} content={msg.content} />
+        ))}
+      </div>
     </div>
   );
 }

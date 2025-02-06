@@ -18,6 +18,7 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -43,7 +44,8 @@ export default function ChatWidget() {
   }, []);
 
   const handleSendMessage = async () => {
-    if (!input.trim() || !userId) return;
+    if (!input.trim() || !userId || isLoading) return;
+    setIsLoading(true);
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: input.trim() };
     const botMessageId = (Date.now() + 1).toString();
     // Create initial bot message with typing indicator
@@ -80,6 +82,8 @@ export default function ChatWidget() {
       );
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -87,22 +91,40 @@ export default function ChatWidget() {
     <>
       <ChatButton onClick={() => setOpen(!open)} icon="💬" />
       {open && (
-        <div className="fixed bottom-20 right-4 w-2/5 h-1/2 bg-white border border-gray-200 rounded-lg shadow-xl flex flex-col overflow-hidden">
-          <ChatHeader title="Chatbot" onClose={() => setOpen(false)} />
+        <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+          <ChatHeader title="Welcome to PortOne Support" onClose={() => setOpen(false)} />
           <MessageList messages={messages} />
-
-          <div className="p-4 border-t border-gray-200">
+          
+          <div className="p-4 bg-white border-t">
             {!messages.some(msg => msg.role === 'user') && (
-              <h3 className="text-black font-semibold text-lg pb-3">
-                Hello! How can I help you today?
-              </h3>
+              <div className="space-y-2 mb-4">
+                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
+                  How to use PortOne for your Indian Shopify store
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
+                  I am getting Amount Limit error. What does it mean?
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100">
+                  How to activate my account
+                </div>
+              </div>
             )}
-            <InputField
-              value={input}
-              placeholder="Type your message..."
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            />
+            <div className="flex items-center gap-2">
+              <InputField
+                value={input}
+                placeholder="Talk to Support..."
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                disabled={isLoading}
+              />
+              <button 
+                onClick={handleSendMessage}
+                disabled={isLoading}
+                className="p-4 bg-[#fc6b2d] text-white rounded-lg hover:bg-[#e85d1f] disabled:opacity-50"
+              >
+                →
+              </button>
+            </div>
             <div ref={messagesEndRef} />
           </div>
         </div>
