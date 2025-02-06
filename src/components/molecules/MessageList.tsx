@@ -12,6 +12,7 @@ type MessageListProps = {
 };
 
 export default function MessageList({ messages, endRef }: MessageListProps) {
+  console.log(messages);
   return (
     <div className="chat-window flex-1 p-3 overflow-y-auto flex flex-col space-y-2">
       {messages.map((msg, index) => (

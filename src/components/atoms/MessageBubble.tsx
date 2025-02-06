@@ -14,7 +14,7 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
     indicator: 'self-start ml-4'
   };
 
-  return (
+  return content && content.length > 0 ? (
     <div
       className={clsx(
         'p-3 rounded-xl mb-3 relative max-w-[85%]',
@@ -32,6 +32,8 @@ export default function MessageBubble({ role, content }: MessageBubbleProps) {
       )}
       {role === 'user' && content}
     </div>
+  ) : (
+    <div style={{ display: 'none' }}></div>
   );
 }
 
