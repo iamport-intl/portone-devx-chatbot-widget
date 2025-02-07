@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:widget": "esbuild src/entry-client.tsx --bundle --outfile=public/widget.js --minify --platform=browser",
     "build:webpack": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {

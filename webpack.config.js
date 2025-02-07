@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack'); // Import webpack
 
 module.exports = {
-    entry: './src/app/page.tsx', // Your widget's entry file
+    entry: './src/entry-client.tsx', // Your widget's entry file
     output: {
         path: path.resolve(__dirname, 'public'),
         filename: 'widget.js',

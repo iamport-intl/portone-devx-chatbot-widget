@@ -1,13 +1,19 @@
-// src/entry-client.tsx
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import ChatPage from './pages/ChatPage';
+   // src/entry-client.tsx
+   import React from 'react';
+   import { createRoot } from 'react-dom/client';
+   import ChatPage from './pages/ChatPage';
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.React = React;
-  const container = document.createElement('div');
-  document.body.appendChild(container);
-  // Mount the ChatWidget using createRoot
-  const root = createRoot(container);
-  root.render(<ChatPage />);
-});
+   function mountWidget() {
+     // Make React available globally if needed by externals.
+     window.React = React;
+     const container = document.createElement('div');
+     document.body.appendChild(container);
+     const root = createRoot(container);
+     root.render(<ChatPage />);
+   }
+
+   if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', mountWidget);
+   } else {
+     mountWidget();
+   }
