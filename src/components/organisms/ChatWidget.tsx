@@ -162,7 +162,7 @@ export default function ChatWidget() {
                 <div className="flex items-center gap-2">
                   <InputField
                     value={input}
-                    placeholder="Talk to Support..."
+                    placeholder="Chat with Support..."
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={isLoading}
