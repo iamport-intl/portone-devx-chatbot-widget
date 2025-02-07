@@ -10,6 +10,7 @@ import { assignUser, fetchConversations, sendMessage as apiSendMessage } from ".
 import HistoryButton from "../atoms/HistoryButton"
 import ConversationHistory from "../organisms/ConversationHistory"
 import { Message, MessageMap, Conversation } from '@/types/chat'
+import CancelButton from '../atoms/CancelButton';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -21,6 +22,10 @@ export default function ChatWidget() {
   const [conversationHistory, setConversationHistory] = useState<Conversation[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Reference to hold the current abort controller for the sendMessage call.
+  const sendControllerRef = useRef<AbortController | null>(null);
+  // Reference to keep track of the pending bot message id (used for cancellation).
+  const pendingMessageRef = useRef<string | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -64,12 +69,19 @@ export default function ChatWidget() {
     if (!messageText || !userId || isLoading) return;
     setIsLoading(true);
     const userMessage: Message = { id: Date.now().toString(), sender: 'user', message: messageText, sentiment: "0", conversationId: conversationId };
+    // Generate a unique ID for the pending bot message.
     const botMessageId = (Date.now() + 1).toString();
+    // Save the pending message id so it can be cancelled
+    pendingMessageRef.current = botMessageId;
 
     const initialBotMessage: Message = { id: botMessageId, sender: 'indicator', message: 'Typing...', sentiment: "0", conversationId: conversationId };
 
     setMessages((prev) => ({ ...prev, [userMessage.id]: userMessage, [initialBotMessage.id]: initialBotMessage }));
     setInput('');
+
+    // Create an AbortController so we can cancel the streaming request
+    const controller = new AbortController();
+    sendControllerRef.current = controller;
 
     try {
       const { content: botContent, conversationId: newConversationId } = await apiSendMessage(
@@ -77,17 +89,44 @@ export default function ChatWidget() {
         userMessage.message,
         conversationId,
         (partial: string) => {
-          setMessages((prev) => ({ ...prev,  [botMessageId]: { ...prev[botMessageId], role: 'bot', content: botContent } }));
-        }
+          // Update the pending bot message on partial update
+          setMessages((prev) => ({
+            ...prev,
+            [botMessageId]: { ...prev[botMessageId], sender: 'bot', message: partial },
+          }));
+        },
+        controller.signal
       );
 
       setConversationId(newConversationId);
 
-      setMessages((prev) => ({ ...prev, [botMessageId]: { ...prev[botMessageId], role: 'bot', content: botContent } }));
-    } catch (error) {
-      console.error('Error sending message:', error);
+      setMessages((prev) => ({
+        ...prev,
+        [botMessageId]: { ...prev[botMessageId], sender: 'bot', message: botContent },
+      }));
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.log("Message sending aborted");
+        // Optionally remove the pending message from state
+        setMessages((prev) => {
+          const updated = { ...prev };
+          delete updated[botMessageId];
+          return updated;
+        });
+      } else {
+        console.error('Error sending message:', error);
+      }
     } finally {
+      sendControllerRef.current = null;
+      pendingMessageRef.current = null;
       setIsLoading(false);
+    }
+  };
+
+  const handleCancelMessage = async () => {
+    if (sendControllerRef.current && pendingMessageRef.current) {
+      // Abort the ongoing fetch request.
+      sendControllerRef.current.abort();
     }
   };
 
@@ -120,7 +159,6 @@ export default function ChatWidget() {
                 <InitialPrompts onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
               )}
               <div className="p-4 bg-white border-t">
-
                 <div className="flex items-center gap-2">
                   <InputField
                     value={input}
@@ -129,21 +167,20 @@ export default function ChatWidget() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={isLoading}
                   />
-                  <div className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer" aria-disabled={isLoading}
-                    style={{
-                      opacity: isLoading ? 0.5 : 1,
-                      cursor: isLoading ? 'not-allowed' : 'pointer',
-                    }}
-                    onClick={() => {
-                      if (!isLoading) {
-                        handleSendMessage();
-                      }
-                    }}>
-                    <img
-                      src="/send.svg"
-                      className="w-5 h-5 text-white"
-                    />
-                  </div>
+                  {isLoading ? (
+                    <CancelButton onClick={handleCancelMessage} />
+                  ) : (
+                    <div
+                      className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer"
+                      onClick={() => {
+                        if (!isLoading) {
+                          handleSendMessage();
+                        }
+                      }}
+                    >
+                      <img src="/send.svg" className="w-5 h-5 text-white" />
+                    </div>
+                  )}
                 </div>
               </div>
             </>

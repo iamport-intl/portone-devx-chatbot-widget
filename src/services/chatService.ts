@@ -18,12 +18,14 @@ export async function sendMessage(
   userId: string,
   message: string,
   conversationId: string = "",
-  onPartialUpdate?: (partial: string) => void
+  onPartialUpdate?: (partial: string) => void,
+  signal?: AbortSignal
 ): Promise<{ content: string; conversationId: string }> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ conversation_id: conversationId, user_id: userId, message }),
+    signal,
   });
 
   let botContent = '';
