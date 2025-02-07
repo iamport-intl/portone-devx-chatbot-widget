@@ -39,9 +39,8 @@ module.exports = {
     performance: {
         hints: false, // Disable performance hints (if desired)
     },
-    // Remove or comment out the externals so React is bundled with your widget:
-    // externals: {
-    //   react: 'React',
-    //   'react-dom': 'ReactDOM',
-    // },
+    externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+    },
 }; 

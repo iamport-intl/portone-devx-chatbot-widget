@@ -1,7 +1,7 @@
    // src/entry-client.tsx
    import React from 'react';
    import { createRoot } from 'react-dom/client';
-   import ChatPage from './pages/ChatPage';
+   import ChatPage from './app/page';
 
    // Set the globals so that the UMD build can access the libraries.
    window.React = React;
