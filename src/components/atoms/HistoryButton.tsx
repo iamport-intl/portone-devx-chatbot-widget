@@ -1,4 +1,5 @@
 import React from 'react';
+import { getAssetUrl } from '../../services/assetsService';
 
 type HistoryButtonProps = {
   onClick: () => void;
@@ -11,14 +12,16 @@ export default function HistoryButton({ onClick, isHistoryView = false }: Histor
       {isHistoryView ? (
         <img
           onClick={onClick}
-          src="/back.svg"
-          className="w-5 h-5 cursor-pointer text-white"
+          src={getAssetUrl("back.svg")}
+          alt="Back"
+          className="w-5 h-5 cursor-pointer"
         />
       ) : (
         <img
           onClick={onClick}
-          src="/history.svg"
-          className="w-5 h-5 cursor-pointer text-white"
+          src={getAssetUrl("history.svg")}
+          alt="History"
+          className="w-5 h-5 cursor-pointer"
         />
       )}
     </div>

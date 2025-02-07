@@ -1,4 +1,5 @@
 import React from 'react';
+import { getAssetUrl } from '../../services/assetsService';
 
 type ChatHeaderProps = {
   title: string;
@@ -13,7 +14,8 @@ export default function ChatHeader({ title, onClose, leftComponent }: ChatHeader
       <h2 className="text-white text-xl font-bold mx-auto">{title}</h2>
       <img
         onClick={onClose}
-        src="/close.svg"
+        src={getAssetUrl("close.svg")}
+        alt="Close"
         className="w-5 h-5 cursor-pointer text-white"
       />
     </div>
