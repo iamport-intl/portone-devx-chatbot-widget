@@ -11,9 +11,6 @@ module.exports = {
         libraryTarget: 'umd',
         globalObject: 'this', // Important for UMD builds in non-browser environments
     },
-    externals: {
-        'react': 'React',
-    },
     plugins: [
         new webpack.ProvidePlugin({
             "React": "react",
