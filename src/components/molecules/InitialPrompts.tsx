@@ -5,8 +5,8 @@ type InitialPromptsProps = {
 };
 
 const prompts = [
-  "How to use PortOne for your Indian Shopify store",
-  "I am getting Amount Limit error. What does it mean?",
+  "How to integrate portone web sdk in my website? Give me a step by step guide.",
+  "Can portone help me in reconciling my accounts across multiple payment gateways?",
   "How to activate my account",
 ];
 

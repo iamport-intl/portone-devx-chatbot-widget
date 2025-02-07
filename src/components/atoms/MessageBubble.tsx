@@ -55,9 +55,9 @@ export default function MessageBubble({ sender, message, conversationId, message
                 </button>
               </>
             ) : feedback === 'up' ? (
-              <button className="cursor-pointer bg-blue-500 text-white p-1 rounded">👍</button>
+              <button className="cursor-pointer bg-gray-200 text-white p-1 rounded">👍</button>
             ) : (
-              <button className="cursor-pointer bg-blue-500 text-white p-1 rounded">👎</button>
+              <button className="cursor-pointer bg-gray-200 text-white p-1 rounded">👎</button>
             )}
           </div>
         </>
