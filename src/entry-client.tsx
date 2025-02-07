@@ -1,16 +1,18 @@
    // src/entry-client.tsx
    import React from 'react';
    import { createRoot } from 'react-dom/client';
+   import ReactDOM from 'react-dom';
    import ChatPage from './pages/ChatPage';
 
+   // Set the globals so that the UMD build can access the libraries.
+   window.React = React;
+   window.ReactDOM = ReactDOM;
+
    function mountWidget() {
-     // Make React available globally if needed by externals.
-     window.React = React;
      const container = document.createElement('div');
      container.classList.add('portone-chat-widget');
      document.body.appendChild(container);
-     const root = createRoot(container);
-     root.render(<ChatPage />);
+     createRoot(container).render(<ChatPage />);
    }
 
    if (document.readyState === 'loading') {
