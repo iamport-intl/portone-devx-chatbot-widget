@@ -37,6 +37,11 @@ module.exports = {
                     },
                 },
             },
+            // Add this new rule to process CSS files
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
+            },
         ],
     },
     // Add a resolve block specifying file extensions and module directories.
@@ -47,7 +52,4 @@ module.exports = {
         },
         modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     },
-    performance: {
-        hints: false, // Disable performance hints (if desired)
-    }
 }; 
