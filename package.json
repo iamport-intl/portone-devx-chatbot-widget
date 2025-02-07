@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:webpack": "webpack --mode production --config webpack.config.js"
+    "build:webpack": "webpack --mode production --config webpack.config.js",
+    "build:esbuild": "node esbuild.config.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",

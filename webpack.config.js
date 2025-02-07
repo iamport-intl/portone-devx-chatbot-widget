@@ -14,15 +14,26 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.[jt]sx?$/,  // This will match .js, .jsx, .ts, and .tsx files.
+                test: /\.[jt]sx?$/,  // Matches .js, .jsx, .ts, and .tsx files.
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            '@babel/preset-react',      // Transpile JSX
-                            '@babel/preset-typescript'  // Transpile TS/TSX
-                        ],
+                            // Optionally include preset-env for broader environment support
+                            ['@babel/preset-env', { targets: "defaults" }],
+                            [
+                                '@babel/preset-typescript',
+                                {
+                                    isTSX: true,      // Enable TSX parsing for .tsx files
+                                    allExtensions: true // Allow all file extensions to contain TSX
+                                }
+                            ],
+                            [
+                                '@babel/preset-react',
+                                { runtime: 'automatic' } // Use the new JSX transform (React 17+ / 19)
+                            ]
+                        ]
                     },
                 },
             },
@@ -38,9 +49,5 @@ module.exports = {
     },
     performance: {
         hints: false, // Disable performance hints (if desired)
-    },
-    externals: {
-        react: 'React',
-        'react-dom': 'ReactDOM',
-    },
+    }
 }; 
