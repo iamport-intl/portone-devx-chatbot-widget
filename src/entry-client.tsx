@@ -7,6 +7,7 @@
      // Make React available globally if needed by externals.
      window.React = React;
      const container = document.createElement('div');
+     container.classList.add('portone-chat-widget');
      document.body.appendChild(container);
      const root = createRoot(container);
      root.render(<ChatPage />);
