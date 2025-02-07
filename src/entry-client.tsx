@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import ChatPage from './pages/ChatPage';
 
 document.addEventListener('DOMContentLoaded', () => {
+  window.React = React;
   const container = document.createElement('div');
   document.body.appendChild(container);
   // Mount the ChatWidget using createRoot

@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack'); // Import webpack
 
 module.exports = {
     entry: './src/app/page.tsx', // Your widget's entry file
@@ -14,6 +15,11 @@ module.exports = {
         'react': 'React',
         'react-dom': 'ReactDOM'
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+            "React": "react",
+        }),
+    ],
     mode: 'production',
     module: {
         rules: [
