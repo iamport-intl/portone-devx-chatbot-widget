@@ -100,10 +100,12 @@ export default function ChatWidget() {
             title={showHistory ? "Conversation History" : "Welcome to PortOne Support"}
             onClose={() => setOpen(false)}
             leftComponent={
-              <HistoryButton
-                onClick={() => setShowHistory(!showHistory)}
-                isHistoryView={showHistory}
-              />
+              conversationHistory.length > 0 && (
+                <HistoryButton
+                  onClick={() => setShowHistory(!showHistory)}
+                  isHistoryView={showHistory}
+                />
+              )
             }
           />
           {showHistory ? (
