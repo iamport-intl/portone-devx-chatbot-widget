@@ -6,6 +6,7 @@ import ChatPage from './pages/ChatPage';
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.createElement('div');
   document.body.appendChild(container);
-  // Mount the ChatWidget.
-  createRoot(container).render(<ChatPage />);
+  // Mount the ChatWidget using createRoot
+  const root = createRoot(container);
+  root.render(<ChatPage />);
 });
