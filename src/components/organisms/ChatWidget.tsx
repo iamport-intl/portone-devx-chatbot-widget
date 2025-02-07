@@ -9,31 +9,11 @@ import InitialPrompts from "../molecules/InitialPrompts"
 import { assignUser, fetchConversations, sendMessage as apiSendMessage } from "../../services/chatService"
 import HistoryButton from "../atoms/HistoryButton"
 import ConversationHistory from "../organisms/ConversationHistory"
-
-
-type Message = {
-  id: string;
-  role: 'user' | 'indicator' | 'bot';
-  content: string;
-};
-
-type Conversation = {
-  conversation_id: string;
-  created_at: string;
-  messages: {
-    id: string;
-    message: string;
-    sender: string;
-    timestamp: string;
-  }[];
-  last_message_time: string;
-  user_id: string;
-  title: string;
-};
+import { Message, MessageMap, Conversation } from '@/types/chat'
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageMap>({});
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -65,11 +45,16 @@ export default function ChatWidget() {
 
   const handleSelectConversation = (conversation: Conversation) => {
     setConversationId(conversation.conversation_id);
-    const mappedMessages = conversation.messages.map((msg) => ({
-      id: msg.id,
-      content: msg.message,
-      role: (msg.sender === 'user' ? 'user' : 'bot') as 'user' | 'bot'
-    }));
+    const mappedMessages: MessageMap = {};
+    Object.values(conversation.messages).forEach((msg) => {
+      mappedMessages[msg.id] = {
+        id: msg.id,
+        message: msg.message, // Use the "message" field from the API
+        sender: msg.sender === 'user' ? 'user' : 'bot', // Use the "sender" field from the API
+        sentiment: msg.sentiment, // Optionally, use the API's sentiment value
+        conversationId: conversation.conversation_id
+      };
+    });
     setMessages(mappedMessages);
     setShowHistory(false);
   };
@@ -78,37 +63,27 @@ export default function ChatWidget() {
     const messageText = messageOverride !== undefined ? messageOverride.trim() : input.trim();
     if (!messageText || !userId || isLoading) return;
     setIsLoading(true);
-    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: messageText };
+    const userMessage: Message = { id: Date.now().toString(), sender: 'user', message: messageText, sentiment: "0", conversationId: conversationId };
     const botMessageId = (Date.now() + 1).toString();
 
-    const initialBotMessage: Message = { id: botMessageId, role: 'indicator', content: 'Typing...' };
+    const initialBotMessage: Message = { id: botMessageId, sender: 'indicator', message: 'Typing...', sentiment: "0", conversationId: conversationId };
 
-    setMessages((prev) => [...prev, userMessage, initialBotMessage]);
+    setMessages((prev) => ({ ...prev, [userMessage.id]: userMessage, [initialBotMessage.id]: initialBotMessage }));
     setInput('');
 
     try {
       const { content: botContent, conversationId: newConversationId } = await apiSendMessage(
         userId,
-        userMessage.content,
+        userMessage.message,
         conversationId,
         (partial: string) => {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === botMessageId
-                ? { ...msg, role: 'bot', content: partial }
-                : msg
-            )
-          );
+          setMessages((prev) => ({ ...prev,  [botMessageId]: { ...prev[botMessageId], role: 'bot', content: botContent } }));
         }
       );
 
       setConversationId(newConversationId);
 
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === botMessageId ? { ...msg, role: 'bot', content: botContent } : msg
-        )
-      );
+      setMessages((prev) => ({ ...prev, [botMessageId]: { ...prev[botMessageId], role: 'bot', content: botContent } }));
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -138,8 +113,8 @@ export default function ChatWidget() {
             />
           ) : (
             <>
-              <MessageList messages={messages} endRef={messagesEndRef} />
-              {!messages.some(msg => msg.role === 'user') && (
+              <MessageList messages={Object.values(messages || {})} endRef={messagesEndRef} />
+              {!Object.values(messages || {}).some(msg => msg.sender === 'user') && (
                 <InitialPrompts onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
               )}
               <div className="p-4 bg-white border-t">

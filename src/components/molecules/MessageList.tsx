@@ -1,10 +1,5 @@
 import MessageBubble from '../atoms/MessageBubble';
-
-type Message = {
-  id: string;
-  role: 'user' | 'bot' | 'indicator';
-  content: string;
-};
+import { Message } from '@/types/chat';
 
 type MessageListProps = {
   messages: Message[];
@@ -16,7 +11,14 @@ export default function MessageList({ messages, endRef }: MessageListProps) {
   return (
     <div className="chat-window flex-1 p-3 overflow-y-auto flex flex-col space-y-2">
       {messages.map((msg, index) => (
-        <MessageBubble key={`${msg.id}-${index}`} role={msg.role} content={msg.content} />
+        <MessageBubble
+          key={`${msg.id}-${index}`}
+          sender={msg.sender}
+          message={msg.message}
+          sentiment={msg.sentiment}
+          conversationId={msg.conversationId}
+          messageId={msg.id}
+        />
       ))}
       <div ref={endRef} />
     </div>

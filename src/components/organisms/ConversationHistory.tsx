@@ -1,9 +1,10 @@
 import React from 'react';
-import ConversationCard, { Conversation } from '../atoms/ConversationCard';
+import ConversationCard from '../atoms/ConversationCard';
+import { Conversation } from '@/types/chat';
 
 type ConversationHistoryProps = {
   conversations: Conversation[];
-  onSelectConversation: (conversation: Conversation & { messages: any[]; last_message_time: string; user_id: string }) => void;
+  onSelectConversation: (conversation: Conversation) => void;
 };
 
 export default function ConversationHistory({ conversations, onSelectConversation }: ConversationHistoryProps) {

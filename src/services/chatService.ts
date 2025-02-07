@@ -68,3 +68,24 @@ export async function sendMessage(
   }
   return { content: botContent, conversationId: finalConversationId };
 }
+
+export async function sendFeedback(
+  conversationId: string,
+  messageId: string,
+  sentiment: string
+): Promise<void> {
+  console.log("Sending feedback:", conversationId, messageId, sentiment);
+  try {
+    await fetch(`${API_BASE}/api/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        conversation_id: conversationId,
+        message_id: messageId,
+        sentiment,
+      }),
+    });
+  } catch (error) {
+    console.error("Error sending feedback:", error);
+  }
+}
