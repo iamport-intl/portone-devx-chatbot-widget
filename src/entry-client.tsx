@@ -1,12 +1,10 @@
    // src/entry-client.tsx
    import React from 'react';
    import { createRoot } from 'react-dom/client';
-   import ReactDOM from 'react-dom';
    import ChatPage from './pages/ChatPage';
 
    // Set the globals so that the UMD build can access the libraries.
    window.React = React;
-   window.ReactDOM = ReactDOM;
 
    function mountWidget() {
      const container = document.createElement('div');

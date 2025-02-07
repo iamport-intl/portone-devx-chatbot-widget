@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack'); // Import webpack
 
 module.exports = {
     entry: './src/entry-client.tsx', // Your widget's entry file
@@ -11,11 +10,6 @@ module.exports = {
         libraryTarget: 'umd',
         globalObject: 'this', // Important for UMD builds in non-browser environments
     },
-    plugins: [
-        new webpack.ProvidePlugin({
-            "React": "react",
-        }),
-    ],
     mode: 'production',
     module: {
         rules: [
