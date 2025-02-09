@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
 import clsx from 'clsx';
 import { sendFeedback } from '../../services/chatService';
+import { getAssetUrl } from '../../services/assetsService';
 
 type MessageBubbleProps = {
   sender: 'user' | 'bot' | 'indicator';
@@ -63,7 +64,7 @@ export default function MessageBubble({ sender, message, conversationId, message
         </>
       ) : sender === 'indicator' ? (
         <img
-          src="/typing.gif"
+          src={getAssetUrl("typing.gif")}
           alt="Typing..."
           className="w-10 h-5 object-contain"
           style={{ imageRendering: 'auto' }}

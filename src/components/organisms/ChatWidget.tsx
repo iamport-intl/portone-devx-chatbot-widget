@@ -11,6 +11,7 @@ import HistoryButton from "../atoms/HistoryButton"
 import ConversationHistory from "../organisms/ConversationHistory"
 import { Message, MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
+import { getAssetUrl } from '../../services/assetsService';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -178,7 +179,7 @@ export default function ChatWidget() {
                         }
                       }}
                     >
-                      <img src="/send.svg" className="w-5 h-5 text-white" />
+                      <img src={getAssetUrl("send.svg")} className="w-5 h-5 text-white" />
                     </div>
                   )}
                 </div>
