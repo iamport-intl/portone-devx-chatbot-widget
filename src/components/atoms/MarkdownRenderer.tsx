@@ -54,13 +54,13 @@ function CodeBlock({ inline, className, children, ...props }: any) {
 
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
-    <ReactMarkdown
-      children={content}
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw]}
-      components={{
-        code: CodeBlock,
-      }}
-    />
+    <div className="prose max-w-none">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={{code: CodeBlock}}>
+        {content}
+      </ReactMarkdown>
+    </div>
   );
-} 
+}
