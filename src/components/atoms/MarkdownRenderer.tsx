@@ -57,8 +57,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     <div className="prose max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw]}
-        components={{code: CodeBlock}}>
+        components={{ code: CodeBlock }}>
         {content}
       </ReactMarkdown>
     </div>
