@@ -9,21 +9,21 @@
   z-index: 9999;
 
   /* Custom scrollbar styles for the chat window */
-  .chat-window::-webkit-scrollbar {
+  .conversation-history::-webkit-scrollbar, .chat-window::-webkit-scrollbar {
     width: 6px;
   }
 
-  .chat-window::-webkit-scrollbar-track {
+  .conversation-history::-webkit-scrollbar-track, .chat-window::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .chat-window::-webkit-scrollbar-thumb {
+  .conversation-history::-webkit-scrollbar-thumb, .chat-window::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 3px;
   }
 
   /* Firefox scrollbar styling */
-  .chat-window {
+  .conversation-history, .chat-window {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   }
