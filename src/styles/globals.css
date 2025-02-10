@@ -41,16 +41,16 @@
   .chat-bubble-bot a {
     color: blue;
   }
-}
 
-.prose table {
-  width: 100%;
-  table-layout: fixed; /* Ensures that the table uses the container width */
-}
-
-.prose th,
-.prose td {
-  word-break: break-word;
-  overflow-wrap: break-word;
-  white-space: normal; /* Allow wrapping within table cells */
+  .prose table {
+    width: 100%;
+    table-layout: fixed; /* Ensures that the table uses the container width */
+  }
+  
+  .prose th,
+  .prose td {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal; /* Allow wrapping within table cells */
+  }
 }
