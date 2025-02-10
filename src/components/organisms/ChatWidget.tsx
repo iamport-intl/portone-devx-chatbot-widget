@@ -135,6 +135,7 @@ export default function ChatWidget() {
   // New functionality: Create a new chat thread
   const handleNewChatThread = () => {
     // Reset conversation and clear previous messages and input.
+    setShowHistory(false);
     setConversationId('');
     setMessages({});
     setInput('');
