@@ -160,6 +160,7 @@ export default function ChatWidget() {
                 <img
                   src={getAssetUrl("plus.svg")}
                   alt="New Chat"
+                  title="Start a New Chat"
                   onClick={handleNewChatThread}
                   className="w-6 h-6 cursor-pointer"
                 />

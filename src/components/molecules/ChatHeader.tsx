@@ -16,6 +16,7 @@ export default function ChatHeader({ title, onClose, leftComponent }: ChatHeader
         onClick={onClose}
         src={getAssetUrl("close.svg")}
         alt="Close"
+        title="Close"
         className="w-5 h-5 cursor-pointer text-white"
       />
     </div>

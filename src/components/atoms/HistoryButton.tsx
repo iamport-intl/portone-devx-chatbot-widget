@@ -14,6 +14,7 @@ export default function HistoryButton({ onClick, isHistoryView = false }: Histor
           onClick={onClick}
           src={getAssetUrl("back.svg")}
           alt="Back"
+          title="Return to Chat"
           className="w-5 h-5 cursor-pointer"
         />
       ) : (
@@ -21,6 +22,7 @@ export default function HistoryButton({ onClick, isHistoryView = false }: Histor
           onClick={onClick}
           src={getAssetUrl("history.svg")}
           alt="History"
+          title="See Conversation History"
           className="w-5 h-5 cursor-pointer"
         />
       )}
