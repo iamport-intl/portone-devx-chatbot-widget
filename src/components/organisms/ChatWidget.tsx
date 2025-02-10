@@ -23,6 +23,7 @@ export default function ChatWidget() {
   const [conversationHistory, setConversationHistory] = useState<Conversation[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   // Reference to hold the current abort controller for the sendMessage call.
   const sendControllerRef = useRef<AbortController | null>(null);
   // Reference to keep track of the pending bot message id (used for cancellation).
@@ -131,21 +132,38 @@ export default function ChatWidget() {
     }
   };
 
+  // New functionality: Create a new chat thread
+  const handleNewChatThread = () => {
+    // Reset conversation and clear previous messages and input.
+    setConversationId('');
+    setMessages({});
+    setInput('');
+    inputRef.current?.focus();
+  };
+
   return (
     <>
       <ChatButton onClick={() => setOpen(!open)} icon="💬" />
       {open && (
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
-            title={showHistory ? "Conversation History" : "Welcome to PortOne Support"}
+            title={showHistory ? "Conversation History" : "PortOne Support"}
             onClose={() => setOpen(false)}
             leftComponent={
-              conversationHistory.length > 0 && (
-                <HistoryButton
-                  onClick={() => setShowHistory(!showHistory)}
-                  isHistoryView={showHistory}
+              <div className="flex gap-2">
+                {conversationHistory.length > 0 && (
+                  <HistoryButton
+                    onClick={() => setShowHistory(!showHistory)}
+                    isHistoryView={showHistory}
+                  />
+                )}
+                <img
+                  src={getAssetUrl("plus.svg")}
+                  alt="New Chat"
+                  onClick={handleNewChatThread}
+                  className="w-6 h-6 cursor-pointer"
                 />
-              )
+              </div>
             }
           />
           {showHistory ? (
@@ -162,6 +180,7 @@ export default function ChatWidget() {
               <div className="p-4 bg-white border-t">
                 <div className="flex items-center gap-2">
                   <InputField
+                    ref={inputRef}
                     value={input}
                     placeholder="Chat with Support..."
                     onChange={(e) => setInput(e.target.value)}
