@@ -12,6 +12,7 @@ import ConversationHistory from "../organisms/ConversationHistory"
 import { Message, MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
 import { getAssetUrl } from '../../services/assetsService';
+import React from 'react';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -142,6 +143,13 @@ export default function ChatWidget() {
     inputRef.current?.focus();
   };
 
+  const handleSelectPrompt = React.useCallback(
+    (prompt: string) => {
+      handleSendMessage(prompt);
+    },
+    [handleSendMessage] // Make sure handleSendMessage is either stable (e.g., memoized) or included as a dependency.
+  );
+
   return (
     <>
       <ChatButton onClick={() => setOpen(!open)} icon="💬" />
@@ -177,7 +185,7 @@ export default function ChatWidget() {
             <>
               <MessageList messages={Object.values(messages || {})} endRef={messagesEndRef} />
               {!Object.values(messages || {}).some(msg => msg.sender === 'user') && (
-                <InitialPrompts onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
+                <InitialPrompts onSelectPrompt={handleSelectPrompt} />
               )}
               <div className="p-4 bg-white border-t">
                 <div className="flex items-center gap-2">

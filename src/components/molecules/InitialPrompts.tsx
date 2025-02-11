@@ -1,4 +1,5 @@
 import PromptCard from '../atoms/PromptCard';
+import React from 'react';
 
 type InitialPromptsProps = {
   onSelectPrompt?: (prompt: string) => void;
@@ -57,18 +58,37 @@ const prompts = [
   "How to activate my account",
 ];
 
-export default function InitialPrompts({ onSelectPrompt }: InitialPromptsProps) {
-  // select 3 random prompts
-  const selectedPrompts = prompts.sort(() => Math.random() - 0.5).slice(0, 3);
+export default function InitialPrompts({
+  onSelectPrompt,
+}: InitialPromptsProps) {
+  // Memoize prompt selection to only calculate once on mount
+  const selectedPrompts = React.useMemo(() => {
+    return prompts.sort(() => Math.random() - 0.5).slice(0, 3);
+  }, []); // Empty dependency array ensures this only runs once
+
   return (
     <div className="space-y-2 mb-4 px-4 flex flex-col">
       {selectedPrompts.map((prompt, index) => (
-        <PromptCard 
-          key={index} 
-          text={prompt} 
-          onClick={() => onSelectPrompt && onSelectPrompt(prompt)}
+        <PromptCard
+          key={index}
+          text={prompt}
+          onClick={() => onSelectPrompt?.(prompt)}
         />
       ))}
     </div>
   );
-} 
+}
+//   // select 3 random prompts
+//   const selectedPrompts = prompts.sort(() => Math.random() - 0.5).slice(0, 3);
+//   return (
+//     <div className="space-y-2 mb-4 px-4 flex flex-col">
+//       {selectedPrompts.map((prompt, index) => (
+//         <PromptCard 
+//           key={index} 
+//           text={prompt} 
+//           onClick={() => onSelectPrompt && onSelectPrompt(prompt)}
+//         />
+//       ))}
+//     </div>
+//   );
+// } 
