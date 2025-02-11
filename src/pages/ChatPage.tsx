@@ -1,3 +1,5 @@
+'use client';
+
 import ChatTemplate from '../templates/ChatTemplate';
 
 export default function ChatPage() {

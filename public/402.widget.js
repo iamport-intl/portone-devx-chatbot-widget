@@ -1,0 +1,1 @@
+"use strict";(this.webpackChunkWidget=this.webpackChunkWidget||[]).push([[402],{1402:(e,s,n)=>{n.r(s),n.d(s,{default:()=>c});var i=n(4953),t=n.n(i),r=n(4848);const a=t()((()=>Promise.all([n.e(104),n.e(217)]).then(n.bind(n,4217))),{ssr:!1});function c(){return(0,r.jsx)("div",{className:"min-h-screen bg-gray-50",children:(0,r.jsx)(a,{})})}}}]);

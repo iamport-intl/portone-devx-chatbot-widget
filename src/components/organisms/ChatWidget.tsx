@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import ChatHeader from "../molecules/ChatHeader"
 import MessageList from "../molecules/MessageList"
 import InputField from "../atoms/InputField"
@@ -51,7 +51,7 @@ export default function ChatWidget() {
     }
   }, []);
 
-  const handleSelectConversation = (conversation: Conversation) => {
+  const handleSelectConversation = useCallback((conversation: Conversation) => {
     setConversationId(conversation.conversation_id);
     const mappedMessages: MessageMap = {};
     Object.values(conversation.messages).forEach((msg) => {
@@ -65,9 +65,9 @@ export default function ChatWidget() {
     });
     setMessages(mappedMessages);
     setShowHistory(false);
-  };
+  }, []);
 
-  const handleSendMessage = async (messageOverride?: string) => {
+  const handleSendMessage = useCallback(async (messageOverride?: string) => {
     const messageText = messageOverride !== undefined ? messageOverride.trim() : input.trim();
     if (!messageText || !userId || isLoading) return;
     setIsLoading(true);
@@ -124,35 +124,49 @@ export default function ChatWidget() {
       pendingMessageRef.current = null;
       setIsLoading(false);
     }
-  };
+  }, [input, userId, isLoading, conversationId]);
 
-  const handleCancelMessage = async () => {
+  const handleCancelMessage = useCallback(() => {
     if (sendControllerRef.current && pendingMessageRef.current) {
       // Abort the ongoing fetch request.
       sendControllerRef.current.abort();
     }
-  };
+  }, []);
 
   // New functionality: Create a new chat thread
-  const handleNewChatThread = () => {
+  const handleNewChatThread = useCallback(() => {
     // Reset conversation and clear previous messages and input.
     setShowHistory(false);
     setConversationId('');
     setMessages({});
     setInput('');
     inputRef.current?.focus();
-  };
+  }, []);
 
-  const handleSelectPrompt = React.useCallback(
+  const handleSelectPrompt = useCallback(
     (prompt: string) => {
       handleSendMessage(prompt);
     },
     [handleSendMessage] // Make sure handleSendMessage is either stable (e.g., memoized) or included as a dependency.
   );
 
+  const toggleChatOpen = useCallback(() => {
+    setOpen(prev => !prev);
+  }, []);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  }, []);
+
+  const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  }, [handleSendMessage]);
+
   return (
     <>
-      <ChatButton onClick={() => setOpen(!open)} icon="💬" />
+      <ChatButton onClick={toggleChatOpen} icon="💬" />
       {open && (
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
@@ -162,7 +176,7 @@ export default function ChatWidget() {
               <div className="flex gap-2">
                 {conversationHistory.length > 0 && (
                   <HistoryButton
-                    onClick={() => setShowHistory(!showHistory)}
+                    onClick={() => setShowHistory((prev) => !prev)}
                     isHistoryView={showHistory}
                   />
                 )}
@@ -193,8 +207,8 @@ export default function ChatWidget() {
                     ref={inputRef}
                     value={input}
                     placeholder="Chat with Support..."
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
                     disabled={isLoading}
                   />
                   {isLoading ? (

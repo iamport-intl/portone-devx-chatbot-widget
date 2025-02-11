@@ -5,7 +5,7 @@ type PromptCardProps = {
   onClick?: () => void;
 };
 
-export default function PromptCard({ text, onClick }: PromptCardProps) {
+const PromptCard = ({ text, onClick }: PromptCardProps) => {
   return (
     <div 
       onClick={onClick}
@@ -14,4 +14,6 @@ export default function PromptCard({ text, onClick }: PromptCardProps) {
       {text}
     </div>
   );
-} 
+};
+
+export default React.memo(PromptCard); 

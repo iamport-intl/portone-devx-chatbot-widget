@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import MarkdownRenderer from './MarkdownRenderer';
+import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import { sendFeedback } from '../../services/chatService';
 import { getAssetUrl } from '../../services/assetsService';
+
+const MarkdownRenderer = dynamic(() => import('./MarkdownRenderer'), { 
+  ssr: false, 
+  loading: () => <p>Loading...</p> 
+});
 
 type MessageBubbleProps = {
   sender: 'user' | 'bot' | 'indicator';
@@ -12,7 +17,7 @@ type MessageBubbleProps = {
   sentiment?: string; // "positive", "negative" or "neutral"
 };
 
-export default function MessageBubble({ sender, message, conversationId, messageId, sentiment }: MessageBubbleProps) {
+const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }: MessageBubbleProps) => {
   // Normalize the sentiment to a string so that both numeric and string values work.
   const normalizedSentiment = sentiment?.toString();
   const initialFeedback = normalizedSentiment === "positive" ? 'up' : normalizedSentiment === "negative" ? 'down' : null;
@@ -74,7 +79,9 @@ export default function MessageBubble({ sender, message, conversationId, message
       )}
     </div>
   );
-}
+};
+
+export default React.memo(MessageBubble);
 
 const styles = `
   .chat-bubble-user {

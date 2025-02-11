@@ -9,7 +9,7 @@ export type InputFieldProps = {
 };
 
 // Wrap the component with forwardRef to pass the ref to the underlying <input>.
-const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({ value, placeholder, onChange, onKeyDown, disabled }, ref) => {
+const InputFieldComponent = forwardRef<HTMLInputElement, InputFieldProps>(({ value, placeholder, onChange, onKeyDown, disabled }, ref) => {
     return (
       <input
         ref={ref}
@@ -24,5 +24,5 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({ value, place
     );
   });
 
-export default InputField;
+export default React.memo(InputFieldComponent);
   

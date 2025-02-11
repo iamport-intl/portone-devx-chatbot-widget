@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { getAssetUrl } from '../../services/assetsService';
 
 type HistoryButtonProps = {
@@ -6,26 +7,32 @@ type HistoryButtonProps = {
   isHistoryView?: boolean;
 };
 
-export default function HistoryButton({ onClick, isHistoryView = false }: HistoryButtonProps) {
+const HistoryButton = ({ onClick, isHistoryView = false }: HistoryButtonProps) => {
   return (
     <div className="flex items-center justify-center">
       {isHistoryView ? (
-        <img
+        <Image
           onClick={onClick}
           src={getAssetUrl("back.svg")}
           alt="Back"
           title="Return to Chat"
-          className="w-5 h-5 cursor-pointer"
+          width={20}
+          height={20}
+          className="cursor-pointer"
         />
       ) : (
-        <img
+        <Image
           onClick={onClick}
           src={getAssetUrl("history.svg")}
           alt="History"
           title="See Conversation History"
-          className="w-5 h-5 cursor-pointer"
+          width={20}
+          height={20}
+          className="cursor-pointer"
         />
       )}
     </div>
   );
-}   
+};
+
+export default React.memo(HistoryButton);   

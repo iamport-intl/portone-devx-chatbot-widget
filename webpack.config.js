@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/entry-client.tsx', // Your widget's entry file
@@ -11,6 +12,23 @@ module.exports = {
         globalObject: 'this', // Important for UMD builds in non-browser environments
     },
     mode: 'development',
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        alias: {
+            '@': path.resolve(__dirname, 'src'), // <-- This resolves '@/pages/ChatPage' to '<project_root>/src/pages/ChatPage'
+        },
+        modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
+        fallback: {
+            // Provide a fallback for the Node "process" global variable.
+            process: require.resolve('process/browser'),
+        },
+    },
+    plugins: [
+        // Automatically provide the process polyfill.
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+    ],
     module: {
         rules: [
             {
@@ -43,13 +61,5 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
         ],
-    },
-    // Add a resolve block specifying file extensions and module directories.
-    resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-        alias: {
-            '@': path.resolve(__dirname, 'src'), // <-- This resolves '@/pages/ChatPage' to '<project_root>/src/pages/ChatPage'
-        },
-        modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     },
 }; 

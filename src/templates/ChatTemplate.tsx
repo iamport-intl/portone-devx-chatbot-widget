@@ -1,5 +1,6 @@
-import ChatWidget from "@/components/organisms/ChatWidget";
+'use client';
 
+import ChatWidget from '@/components/organisms/ChatWidget';
 
 export default function ChatTemplate() {
   return (
