@@ -16,8 +16,8 @@ const HistoryButton = ({ onClick, isHistoryView = false }: HistoryButtonProps) =
           src={getAssetUrl("back.svg")}
           alt="Back"
           title="Return to Chat"
-          width={20}
-          height={20}
+          width={12}
+          height={12}
           className="cursor-pointer"
         />
       ) : (

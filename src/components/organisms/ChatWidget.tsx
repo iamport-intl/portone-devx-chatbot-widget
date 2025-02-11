@@ -13,6 +13,7 @@ import { Message, MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
 import { getAssetUrl } from '../../services/assetsService';
 import React from 'react';
+import Image from 'next/image';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -180,12 +181,14 @@ export default function ChatWidget() {
                     isHistoryView={showHistory}
                   />
                 )}
-                <img
+                <Image
                   src={getAssetUrl("plus.svg")}
+                  onClick={handleNewChatThread}
                   alt="New Chat"
                   title="Start a New Chat"
-                  onClick={handleNewChatThread}
-                  className="w-6 h-6 cursor-pointer"
+                  width={20}
+                  height={20}
+                  className="cursor-pointer"
                 />
               </div>
             }
