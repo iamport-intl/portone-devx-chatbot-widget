@@ -1,5 +1,4 @@
-const API_BASE = 'https://chatbot-backend-t8bw.onrender.com';
-// const API_BASE = 'http://localhost:8000';
+const API_BASE = process.env.API_URL;
 
 export async function assignUser() {
   const response = await fetch(`${API_BASE}/api/assign_user`, {

@@ -1,5 +1,20 @@
 const path = require('path');
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+// Load environment variables based on the current NODE_ENV.
+const envResult = dotenv.config({
+    path: `.env.${process.env.NODE_ENV || 'test'}`,
+});
+if (envResult.error) {
+    throw envResult.error;
+}
+
+// Prepare the environment variables to be injected by DefinePlugin.
+const envKeys = Object.keys(envResult.parsed).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(envResult.parsed[next]);
+    return prev;
+}, {});
 
 module.exports = {
     entry: './src/entry-client.tsx', // Your widget's entry file
@@ -28,6 +43,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
+        new webpack.DefinePlugin(envKeys)
     ],
     module: {
         rules: [
