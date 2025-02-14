@@ -78,13 +78,14 @@ jobs:
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
 
-          # Stage the public folder
+          # Stage the public folder only.
           git add public/
 
-          # Only commit if there are changes.
-          if git diff-index --quiet HEAD --; then
+          # Check for changes in the public folder only.
+          if git diff-index --quiet HEAD -- public/; then
             echo "No changes detected in the public folder. Skipping commit."
           else
+            echo "Changes detected in public folder. Committing..."
             git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF}"
             git push
           fi
