@@ -1,5 +1,5 @@
-const API_BASE = 'https://chatbot-backend-t8bw.onrender.com';
-// const API_BASE = 'http://localhost:8000';
+// const API_BASE = 'https://chatbot-backend-t8bw.onrender.com';
+const API_BASE = 'http://localhost:8000';
 
 export async function assignUser() {
   const response = await fetch(`${API_BASE}/api/assign_user`, {
@@ -56,7 +56,14 @@ export async function sendMessage(
           const jsonStr = trimmedLine.replace(/^data:\s*/, '');
           try {
             const jsonValue = JSON.parse(jsonStr);
-            if (jsonValue.event === 'done') {
+            if (jsonValue.error) {
+              console.error("Error streaming chat message:", jsonValue.error);
+              // Update UI to let the user know they should try again later.
+              botContent = "An error occurred while processing your request. Please try again in a moment.";
+              if (onPartialUpdate) onPartialUpdate(botContent);
+              // Return early since there is an error.
+              return { content: botContent, conversationId: finalConversationId };
+            } else if (jsonValue.event === 'done') {
               finalConversationId = jsonValue.conversation_id;
             } else if (jsonValue.data) {
               botContent += jsonValue.data;
