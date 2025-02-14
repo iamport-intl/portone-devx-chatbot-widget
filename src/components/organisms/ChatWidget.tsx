@@ -171,7 +171,7 @@ export default function ChatWidget() {
       {open && (
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
-            title={showHistory ? "Conversation History" : "PortOne Support"}
+            title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
             onClose={() => setOpen(false)}
             leftComponent={
               <div className="flex gap-2">

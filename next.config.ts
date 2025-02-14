@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
   env: {
     API_URL: process.env.API_URL,
     CDN_BASE_URL: process.env.CDN_BASE_URL,
+    APP_TITLE: process.env.APP_TITLE,
   },
   /* config options here */
 };
