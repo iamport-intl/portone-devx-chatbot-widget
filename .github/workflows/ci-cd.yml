@@ -61,14 +61,30 @@ jobs:
       - name: Deploy Changes
         run: |
           echo "Deploying changes for branch: ${GITHUB_REF}"
-          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+          if [ "${GITHUB_REF}" == "refs/heads/production" ]; then
             echo "Deploying to Production Environment"
-            # Place your production deployment commands here. Example:
-            # scp public/widget.js user@production-server:/path/to/deploy
           elif [ "${GITHUB_REF}" == "refs/heads/staging" ]; then
             echo "Deploying to Staging Environment"
-            # Place your staging deployment commands here.
-          else
+          elif [ "${GITHUB_REF}" == "refs/heads/development" ]; then
             echo "Deploying to Development Environment"
-            # Place your development deployment commands here.
+          else
+            echo "Deploying to Test Environment"
+          fi
+
+      - name: Commit Generated Public Files
+        run: |
+          echo "Preparing to commit changes in public folder..."
+          # Configure Git user details.
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+          # Stage the public folder
+          git add public/
+
+          # Only commit if there are changes.
+          if git diff-index --quiet HEAD --; then
+            echo "No changes detected in the public folder. Skipping commit."
+          else
+            git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF}"
+            git push
           fi
