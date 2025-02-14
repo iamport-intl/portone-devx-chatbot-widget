@@ -86,6 +86,6 @@ jobs:
             echo "No changes detected in the public folder. Skipping commit."
           else
             echo "Changes detected in public folder. Committing..."
-            git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF}"
+            git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF} [skip ci]"
             git push
           fi
