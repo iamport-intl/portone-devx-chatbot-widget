@@ -167,31 +167,18 @@ export default function ChatWidget() {
 
   return (
     <>
-      <ChatButton onClick={toggleChatOpen} icon="💬" />
+      <ChatButton onClick={toggleChatOpen} />
       {open && (
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
             onClose={() => setOpen(false)}
-            leftComponent={
-              <div className="flex gap-2">
-                {conversationHistory.length > 0 && (
-                  <HistoryButton
-                    onClick={() => setShowHistory((prev) => !prev)}
-                    isHistoryView={showHistory}
-                  />
-                )}
-                <Image
-                  src={getAssetUrl("plus.svg")}
-                  onClick={handleNewChatThread}
-                  alt="New Chat"
-                  title="Start a New Chat"
-                  width={20}
-                  height={20}
-                  className="cursor-pointer"
-                />
-              </div>
-            }
+            onSwitchToNew={() => {
+              handleNewChatThread();
+              setShowHistory(false);
+            }}
+            onSwitchToHistory={() => setShowHistory(true)}
+            showHistoryTab={conversationHistory.length > 0}
           />
           {showHistory ? (
             <ConversationHistory

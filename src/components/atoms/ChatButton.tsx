@@ -1,20 +1,22 @@
 import React from 'react';
+import Image from 'next/image';
+import { getAssetUrl } from '@/services/assetsService';
 
 type ChatButtonProps = {
     onClick: () => void;
-    icon?: React.ReactNode;
     style?: React.CSSProperties;
   };
 
-const ChatButton = ({ onClick, icon, style }: ChatButtonProps) => {
+const ChatButton = ({ onClick }: ChatButtonProps) => {
     return (
-      <button
+      <Image
         onClick={onClick}
-        style={{ backgroundColor: '#fc6b2d', ...style }}
-        className="fixed bottom-4 right-4 text-white p-4 w-14 h-14 rounded-full shadow-lg flex items-center justify-center"
-      >
-        {icon ? icon : '💬'}
-      </button>
+        src="/chat-intro.svg"
+        alt="Help"
+        width={100}
+        height={70}
+        className="fixed bottom-0 right-0 m-2 cursor-pointer"
+      />
     );
   };
 
