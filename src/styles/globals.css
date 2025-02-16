@@ -13,17 +13,17 @@
     width: 6px;
   }
 
-  .conversation-history::-webkit-scrollbar-track, .chat-window::-webkit-scrollbar-track {
+  .conversation-history::-webkit-scrollbar-track, .chat-window::-webkit-scrollbar-track, .initial-prompts::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .conversation-history::-webkit-scrollbar-thumb, .chat-window::-webkit-scrollbar-thumb {
+  .conversation-history::-webkit-scrollbar-thumb, .chat-window::-webkit-scrollbar-thumb, .initial-prompts::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 3px;
   }
 
   /* Firefox scrollbar styling */
-  .conversation-history, .chat-window {
+  .conversation-history, .chat-window, .initial-prompts {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   }
