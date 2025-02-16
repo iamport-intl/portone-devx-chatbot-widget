@@ -9,18 +9,20 @@ type ConversationHistoryProps = {
 
 export default function ConversationHistory({ conversations, onSelectConversation }: ConversationHistoryProps) {
   return (
-    <div className="p-4 overflow-y-auto flex-1 conversation-history">
-      {conversations.length === 0 ? (
-        <div>No conversations found.</div>
-      ) : (
-        conversations.map((conv) => (
-          <ConversationCard
-            key={conv.conversation_id}
-            conversation={conv}
-            onClick={() => onSelectConversation(conv as any)}
-          />
-        ))
-      )}
+    <div className="overflow-y-auto flex-1 conversation-history flex items-center">
+      <div className="w-full flex flex-col gap-2 bg-white p-4 rounded-lg mt-14">
+        {conversations.length === 0 ? (
+          <div className="text-center">No conversations found.</div>
+        ) : (
+          conversations.map((conv) => (
+            <ConversationCard
+              key={conv.conversation_id}
+              conversation={conv}
+              onClick={() => onSelectConversation(conv as any)}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }
