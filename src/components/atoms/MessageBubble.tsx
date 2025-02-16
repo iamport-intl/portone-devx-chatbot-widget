@@ -15,13 +15,25 @@ type MessageBubbleProps = {
   conversationId?: string;
   messageId?: string;
   sentiment?: string; // "positive", "negative" or "neutral"
+  latestMessageId?: string; // new prop to mark the latest bot message
 };
 
-const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }: MessageBubbleProps) => {
+const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, latestMessageId }: MessageBubbleProps) => {
   // Normalize the sentiment to a string so that both numeric and string values work.
   const normalizedSentiment = sentiment?.toString();
   const initialFeedback = normalizedSentiment === "positive" ? 'up' : normalizedSentiment === "negative" ? 'down' : null;
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(initialFeedback);
+
+  // New state for expand/collapse of truncated messages.
+  const [expanded, setExpanded] = useState(false);
+  const TRUNCATE_LENGTH = 200;
+  const isLatest = sender === 'bot' && (messageId === latestMessageId);
+  let displayedMessage = message;
+
+  // For bot messages that are not the latest and are long, show a truncated version.
+  if (sender === 'bot' && !isLatest && !expanded && message.length > TRUNCATE_LENGTH) {
+    displayedMessage = message.slice(0, TRUNCATE_LENGTH) + '...';
+  }
 
   const alignmentClasses = {
     user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
@@ -37,7 +49,18 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }
     <div className={clsx('p-3 rounded-xl mb-3 relative max-w-[85%]', alignmentClasses[sender])}>
       {sender === 'bot' ? (
         <>
-          <MarkdownRenderer content={message} />
+          <MarkdownRenderer content={displayedMessage} />
+          {/* Toggle "See more" / "See less" button if message is long and not the latest */}
+          {latestMessageId && messageId !== latestMessageId && message.length > TRUNCATE_LENGTH && (
+            <div className="mb-3">
+              <button 
+                onClick={() => setExpanded(!expanded)}
+                className="text-primary hover:underline"
+              >
+                {expanded ? "See less" : "See more"}
+              </button>
+            </div>
+          )}
           <div className="flex justify-end gap-2 mt-2 feedback-btns">
             {feedback === null ? (
               <>
