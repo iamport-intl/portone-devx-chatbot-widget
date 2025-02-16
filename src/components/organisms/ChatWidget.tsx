@@ -6,7 +6,7 @@ import MessageList from "../molecules/MessageList"
 import InputField from "../atoms/InputField"
 import ChatButton from "../atoms/ChatButton"
 import InitialPrompts from "../molecules/InitialPrompts"
-import { assignUser, fetchConversations, sendMessage as apiSendMessage } from "../../services/chatService"
+import { assignUser, fetchConversations, sendMessage as apiSendMessage, deleteConversation } from "../../services/chatService"
 import HistoryButton from "../atoms/HistoryButton"
 import ConversationHistory from "../organisms/ConversationHistory"
 import { Message, MessageMap, Conversation } from '@/types/chat'
@@ -66,6 +66,15 @@ export default function ChatWidget() {
     });
     setMessages(mappedMessages);
     setShowHistory(false);
+  }, []);
+
+  const handleDeleteConversation = useCallback(async (conversationId: string) => {
+    try {
+      await deleteConversation(conversationId);
+      setConversationHistory((prev) => prev.filter(conv => conv.conversation_id !== conversationId));
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
   }, []);
 
   const handleSendMessage = useCallback(async (messageOverride?: string) => {
@@ -184,6 +193,7 @@ export default function ChatWidget() {
             <ConversationHistory
               conversations={conversationHistory}
               onSelectConversation={handleSelectConversation}
+              onDeleteConversation={handleDeleteConversation}
             />
           ) : (
             <>

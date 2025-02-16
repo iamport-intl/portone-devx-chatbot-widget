@@ -98,3 +98,14 @@ export async function sendFeedback(
     console.error("Error sending feedback:", error);
   }
 }
+
+// New function for deleting a conversation.
+export async function deleteConversation(conversationId: string): Promise<void> {
+  const response = await fetch(`${API_BASE}/api/conversation/${conversationId}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to delete conversation: ${conversationId}`);
+  }
+}
