@@ -38,7 +38,7 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }
       {sender === 'bot' ? (
         <>
           <MarkdownRenderer content={message} />
-          <div className="flex gap-2 mt-2">
+          <div className="flex justify-end gap-2 mt-2 feedback-btns">
             {feedback === null ? (
               <>
                 <button
@@ -46,7 +46,7 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }
                     setFeedback('up');
                     sendFeedback(conversationId as string, messageId as string, "positive");
                   }}
-                  className="cursor-pointer hover:bg-gray-200 p-1 rounded"
+                  className="feedback-btn cursor-pointer hover:bg-gray-200 p-1 rounded"
                 >
                   👍
                 </button>
@@ -55,15 +55,15 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment }
                     setFeedback('down');
                     sendFeedback(conversationId as string, messageId as string, "negative");
                   }}
-                  className="cursor-pointer hover:bg-gray-200 p-1 rounded"
+                  className="feedback-btn cursor-pointer hover:bg-gray-200 p-1 rounded"
                 >
                   👎
                 </button>
               </>
             ) : feedback === 'up' ? (
-              <button className="cursor-pointer bg-gray-200 text-white p-1 rounded">👍</button>
+              <button className="feedback-btn active cursor-pointer bg-gray-200 text-white p-1 rounded">👍</button>
             ) : (
-              <button className="cursor-pointer bg-gray-200 text-white p-1 rounded">👎</button>
+              <button className="feedback-btn active cursor-pointer bg-gray-200 text-white p-1 rounded">👎</button>
             )}
           </div>
         </>
@@ -100,6 +100,26 @@ const styles = `
     text-align: left;
   }
 
+  .feedback-btns {
+    position: absolute;
+    bottom: -15px;
+    left: 10px;
+  }
+
+  .feedback-btn {
+    padding: 5px;
+    border-radius: 50%;
+    background-color: #F1F1F2;
+    color: #fc6b2d;
+  }
+
+  .feedback-btn:hover {
+    background-color: #fc6b2d1a;
+  }
+
+  .feedback-btn.active {
+    background-color: #fc6b2d1a;
+  }
 `;
 
 if (typeof document !== 'undefined') {
