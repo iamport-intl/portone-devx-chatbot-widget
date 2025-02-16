@@ -3,16 +3,19 @@ import { Conversation } from '@/types/chat';
 import Image from 'next/image';
 import { getAssetUrl } from '@/services/assetsService';
 
-
 type ConversationCardProps = {
   conversation: Conversation;
   onClick: () => void;
   onDelete?: () => void;
 };
 
-export default function ConversationCard({ conversation, onClick, onDelete }: ConversationCardProps) {
+export default function ConversationCard({
+  conversation,
+  onClick,
+  onDelete,
+}: ConversationCardProps) {
   const handleDelete = (e: React.MouseEvent<HTMLImageElement>) => {
-    // Prevent the card's onClick from being triggered.
+    // Prevent the card's left side onClick from being triggered.
     e.stopPropagation();
     if (onDelete) {
       onDelete();
@@ -22,25 +25,32 @@ export default function ConversationCard({ conversation, onClick, onDelete }: Co
   };
 
   return (
-    <div className="flex flex-row gap-2 bg-gray-50 hover:bg-gray-100 p-4 rounded-lg mb-2 items-center justify-between" >
+    <div className="flex items-stretch bg-gray-50 rounded-lg mb-2 overflow-hidden">
       <div
         onClick={onClick}
-        className="cursor-pointer"
+        className="relative flex-1 p-4 cursor-pointer group hover:bg-gray-100"
       >
         <div className="flex flex-col">
           <p className="text-sm text-gray-800">{conversation.title}</p>
-          <p className="text-xs text-gray-500">{new Date(Number(conversation.created_at) * 1000).toDateString()}</p>
+          <p className="text-xs text-gray-500">
+            {new Date(Number(conversation.created_at) * 1000).toDateString()}
+          </p>
         </div>
+        <div className="absolute top-0 right-0 h-full w-px bg-gray-200 group-hover:bg-blue-500" />
       </div>
-      <hr className="w-1 h-10 mx-2 bg-gray-200" />
-      <Image
+
+      {/* Right side: Delete icon */}
+      <div className="relative p-4 flex items-center justify-center group hover:bg-gray-100">
+        <div className="absolute top-0 left-0 h-full w-px bg-gray-200 group-hover:bg-red-500" />
+        <Image
           src={getAssetUrl('trash.svg')}
           alt="Delete"
           width={30}
           height={30}
           onClick={handleDelete}
-          className="ml-4 cursor-pointer"
+          className="cursor-pointer"
         />
+      </div>
     </div>
   );
 }
