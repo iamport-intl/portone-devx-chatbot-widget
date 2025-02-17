@@ -21,6 +21,7 @@ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
           alt="Help"
           width={100}
           height={70}
+          priority
         />
       </button>
     );

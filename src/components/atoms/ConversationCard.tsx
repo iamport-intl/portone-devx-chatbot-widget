@@ -9,11 +9,7 @@ type ConversationCardProps = {
   onDelete?: () => void;
 };
 
-export default function ConversationCard({
-  conversation,
-  onClick,
-  onDelete,
-}: ConversationCardProps) {
+function ConversationCard({ conversation, onClick, onDelete }: ConversationCardProps) {
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Prevent the card's left side onClick from being triggered.
     e.stopPropagation();
@@ -58,3 +54,5 @@ export default function ConversationCard({
     </div>
   );
 }
+
+export default React.memo(ConversationCard);

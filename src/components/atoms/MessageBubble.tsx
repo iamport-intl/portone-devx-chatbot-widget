@@ -10,7 +10,7 @@ const MarkdownRenderer = dynamic(() => import('./MarkdownRenderer'), {
   loading: () => <p>Loading...</p> 
 });
 
-type MessageBubbleProps = {
+export type MessageBubbleProps = {
   sender: 'user' | 'bot' | 'indicator';
   message: string;
   conversationId?: string;
@@ -19,28 +19,29 @@ type MessageBubbleProps = {
   latestMessageId?: string; // new prop to mark the latest bot message
 };
 
+// Moved outside so it is not re-created on every render.
+const alignmentClasses = {
+  user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
+  bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
+  indicator: 'self-start ml-4'
+};
+
 const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, latestMessageId }: MessageBubbleProps) => {
-  // Normalize the sentiment to a string so that both numeric and string values work.
+  // Normalize sentiment value.
   const normalizedSentiment = sentiment?.toString();
   const initialFeedback = normalizedSentiment === "positive" ? 'up' : normalizedSentiment === "negative" ? 'down' : null;
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(initialFeedback);
 
-  // New state for expand/collapse of truncated messages.
+  // State to control expansion of the message.
   const [expanded, setExpanded] = useState(false);
   const TRUNCATE_LENGTH = 200;
   const isLatest = sender === 'bot' && (messageId === latestMessageId);
   let displayedMessage = message;
 
-  // For bot messages that are not the latest and are long, show a truncated version.
+  // Truncate long messages if they are not the latest.
   if (sender === 'bot' && !isLatest && !expanded && message.length > TRUNCATE_LENGTH) {
     displayedMessage = message.slice(0, TRUNCATE_LENGTH) + '...';
   }
-
-  const alignmentClasses = {
-    user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
-    bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
-    indicator: 'self-start ml-4'
-  };
 
   if (!message || message.length === 0) {
     return <div style={{ display: 'none' }} />;
@@ -51,7 +52,6 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
       {sender === 'bot' ? (
         <>
           <MarkdownRenderer content={displayedMessage} />
-          {/* Toggle "See more" / "See less" button if message is long and not the latest */}
           {latestMessageId && messageId !== latestMessageId && message.length > TRUNCATE_LENGTH && (
             <div className="mb-3">
               <button 
