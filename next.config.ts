@@ -36,6 +36,17 @@ const nextConfig: NextConfig = {
     CDN_BASE_URL: process.env.CDN_BASE_URL,
     APP_TITLE: process.env.APP_TITLE,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.jsdelivr.net',
+        port: '',
+        pathname: '**',
+        search: '',
+      },
+    ],
+  },
   /* config options here */
 };
 

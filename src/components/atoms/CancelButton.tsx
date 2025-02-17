@@ -8,15 +8,20 @@ type CancelButtonProps = {
 
 const CancelButton = ({ onClick }: CancelButtonProps) => {
   return (
-    <div className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer" onClick={onClick}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Cancel message"
+      className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer focus:outline-none"
+    >
       <Image
         src={getAssetUrl("cancel.svg")}
         alt="Cancel"
         width={20}
         height={20}
-        className="w-5 h-5 cursor-pointer"
+        className="w-5 h-5"
       />
-    </div>
+    </button>
   );
 };
 

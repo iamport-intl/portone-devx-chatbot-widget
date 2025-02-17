@@ -8,12 +8,13 @@ export type InputFieldProps = {
     disabled?: boolean;
 };
 
-// Wrap the component with forwardRef to pass the ref to the underlying <input>.
-const InputFieldComponent = forwardRef<HTMLInputElement, InputFieldProps>(({ value, placeholder, onChange, onKeyDown, disabled }, ref) => {
+const InputFieldComponent = forwardRef<HTMLInputElement, InputFieldProps>(
+  ({ value, placeholder, onChange, onKeyDown, disabled }, ref) => {
     return (
       <input
         ref={ref}
         type="text"
+        aria-label={placeholder || "Chat input"}
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -22,7 +23,7 @@ const InputFieldComponent = forwardRef<HTMLInputElement, InputFieldProps>(({ val
         className="w-full p-4 text-sm text-gray-700 bg-gray-50 rounded-lg focus:outline-none disabled:cursor-not-allowed"
       />
     );
-  });
+  }
+);
 
 export default React.memo(InputFieldComponent);
-  

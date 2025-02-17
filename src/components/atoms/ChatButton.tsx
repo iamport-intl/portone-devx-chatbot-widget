@@ -5,20 +5,26 @@ import { getAssetUrl } from '@/services/assetsService';
 type ChatButtonProps = {
     onClick: () => void;
     style?: React.CSSProperties;
-  };
+};
 
-const ChatButton = ({ onClick }: ChatButtonProps) => {
+const ChatButton = ({ onClick, style }: ChatButtonProps) => {
     return (
-      <Image
+      <button
+        type="button"
         onClick={onClick}
-        src="/chat-intro.svg"
-        alt="Help"
-        width={100}
-        height={70}
-        className="fixed bottom-0 right-0 m-2 cursor-pointer"
-      />
+        style={style}
+        className="fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none"
+        aria-label="Open chat"
+      >
+        <Image
+          src={getAssetUrl("chat-intro.svg")}
+          alt="Help"
+          width={100}
+          height={70}
+        />
+      </button>
     );
-  };
+};
 
 export default React.memo(ChatButton);
   

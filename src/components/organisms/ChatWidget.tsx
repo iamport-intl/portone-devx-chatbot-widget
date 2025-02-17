@@ -7,7 +7,6 @@ import InputField from "../atoms/InputField"
 import ChatButton from "../atoms/ChatButton"
 import InitialPrompts from "../molecules/InitialPrompts"
 import { assignUser, fetchConversations, sendMessage as apiSendMessage, deleteConversation } from "../../services/chatService"
-import HistoryButton from "../atoms/HistoryButton"
 import ConversationHistory from "../organisms/ConversationHistory"
 import { Message, MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
@@ -119,7 +118,6 @@ export default function ChatWidget() {
       }));
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        console.log("Message sending aborted");
         // Optionally remove the pending message from state
         setMessages((prev) => {
           const updated = { ...prev };
@@ -135,6 +133,12 @@ export default function ChatWidget() {
       setIsLoading(false);
     }
   }, [input, userId, isLoading, conversationId]);
+
+  const handleSendClick = useCallback(() => {
+    if (!isLoading) {
+      handleSendMessage();
+    }
+  }, [isLoading, handleSendMessage]);
 
   const handleCancelMessage = useCallback(() => {
     if (sendControllerRef.current && pendingMessageRef.current) {
@@ -214,16 +218,14 @@ export default function ChatWidget() {
                   {isLoading ? (
                     <CancelButton onClick={handleCancelMessage} />
                   ) : (
-                    <div
-                      className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer"
-                      onClick={() => {
-                        if (!isLoading) {
-                          handleSendMessage();
-                        }
-                      }}
+                    <button
+                      type="button"
+                      onClick={handleSendClick}
+                      className="bg-[#fc6b2d] p-4 rounded-lg cursor-pointer focus:outline-none"
+                      aria-label="Send message"
                     >
-                      <img src={getAssetUrl("send.svg")} className="w-5 h-5 text-white" />
-                    </div>
+                      <Image src={getAssetUrl("send.svg")} alt="Send" width={20} height={20}  />
+                    </button>
                   )}
                 </div>
               </div>

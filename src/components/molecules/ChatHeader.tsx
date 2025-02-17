@@ -21,22 +21,30 @@ const ChatHeader = ({
     <div>
       <div className="bg-[#fc6b2d] p-6 relative flex justify-between items-center">
         <h2 className="text-white text-xl font-bold">{title}</h2>
-        <Image
+        <button
+          type="button"
           onClick={onClose}
-          src={getAssetUrl("close.svg")}
-          alt="Close"
-          title="Close"
-          width={20}
-          height={20}
-          className="cursor-pointer"
-        />
+          aria-label="Close chat"
+          className="focus:outline-none"
+        >
+          <Image
+            src={getAssetUrl("close.svg")}
+            alt="Close"
+            title="Close"
+            width={20}
+            height={20}
+            className="cursor-pointer"
+          />
+        </button>
       </div>
       {(onSwitchToNew || (onSwitchToHistory && showHistoryTab)) && (
         <div className="flex">
           {showHistoryTab && onSwitchToHistory && (
-            <div
-              className="flex-1 flex items-center justify-center py-2 cursor-pointer text-center text-[#26374B] bg-[#FFDFC6]"
+            <button
+              type="button"
               onClick={onSwitchToHistory}
+              className="flex-1 flex items-center justify-center py-2 cursor-pointer text-center text-[#26374B] bg-[#FFDFC6] focus:outline-none"
+              aria-label="View conversation history"
             >
               <div className="flex items-center gap-2">
                 <Image
@@ -47,12 +55,14 @@ const ChatHeader = ({
                 />
                 History
               </div>
-            </div>
+            </button>
           )}
           {onSwitchToNew && (
-            <div
-              className="flex-1 flex items-center justify-center py-2 cursor-pointer text-center text-[#26374B] bg-[#FFEDDF]"
+            <button
+              type="button"
               onClick={onSwitchToNew}
+              className="flex-1 flex items-center justify-center py-2 cursor-pointer text-center text-[#26374B] bg-[#FFEDDF] focus:outline-none"
+              aria-label="Start new chat"
             >
               <div className="flex items-center gap-2">
                 <Image
@@ -63,7 +73,7 @@ const ChatHeader = ({
                 />
                 New Chat
               </div>
-            </div>
+            </button>
           )}
         </div>
       )}

@@ -14,7 +14,7 @@ export default function ConversationCard({
   onClick,
   onDelete,
 }: ConversationCardProps) {
-  const handleDelete = (e: React.MouseEvent<HTMLImageElement>) => {
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Prevent the card's left side onClick from being triggered.
     e.stopPropagation();
     if (onDelete) {
@@ -26,9 +26,10 @@ export default function ConversationCard({
 
   return (
     <div className="flex items-stretch bg-gray-50 rounded-lg mb-2 overflow-hidden">
-      <div
+      <button
+        type="button"
         onClick={onClick}
-        className="relative flex-1 p-4 cursor-pointer group hover:bg-gray-100"
+        className="relative flex-1 p-4 cursor-pointer group hover:bg-gray-100 text-left"
       >
         <div className="flex flex-col">
           <p className="text-sm text-gray-800">{conversation.title}</p>
@@ -37,20 +38,23 @@ export default function ConversationCard({
           </p>
         </div>
         <div className="absolute top-0 right-0 h-full w-px bg-gray-200 group-hover:bg-blue-500" />
-      </div>
+      </button>
 
-      {/* Right side: Delete icon */}
-      <div className="relative p-4 flex items-center justify-center group hover:bg-gray-100">
+      <button
+        type="button"
+        onClick={handleDelete}
+        className="relative p-4 flex items-center justify-center group hover:bg-gray-100"
+        aria-label="Delete conversation"
+      >
         <div className="absolute top-0 left-0 h-full w-px bg-gray-200 group-hover:bg-red-500" />
         <Image
           src={getAssetUrl('trash.svg')}
           alt="Delete"
           width={30}
           height={30}
-          onClick={handleDelete}
           className="cursor-pointer"
         />
-      </div>
+      </button>
     </div>
   );
 }

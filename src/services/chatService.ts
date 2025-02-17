@@ -83,7 +83,6 @@ export async function sendFeedback(
   messageId: string,
   sentiment: string
 ): Promise<void> {
-  console.log("Sending feedback:", conversationId, messageId, sentiment);
   try {
     await fetch(`${API_BASE}/api/feedback`, {
       method: 'POST',

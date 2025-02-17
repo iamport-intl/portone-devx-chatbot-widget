@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import { sendFeedback } from '../../services/chatService';
 import { getAssetUrl } from '../../services/assetsService';
+import Image from 'next/image';
 
 const MarkdownRenderer = dynamic(() => import('./MarkdownRenderer'), { 
   ssr: false, 
@@ -91,11 +92,12 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
           </div>
         </>
       ) : sender === 'indicator' ? (
-        <img
+        <Image
           src={getAssetUrl("typing.gif")}
           alt="Typing..."
-          className="w-10 h-5 object-contain"
-          style={{ imageRendering: 'auto' }}
+          width={20}
+          height={15}
+          style={{ objectFit: 'contain', imageRendering: 'auto' }}
         />
       ) : (
         message

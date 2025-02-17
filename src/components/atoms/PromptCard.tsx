@@ -7,12 +7,14 @@ type PromptCardProps = {
 
 const PromptCard = ({ text, onClick }: PromptCardProps) => {
   return (
-    <div 
+    <button 
+      type="button"
       onClick={onClick}
-      className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100"
+      className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100 text-left focus:outline-none"
+      aria-label={text}
     >
       {text}
-    </div>
+    </button>
   );
 };
 
