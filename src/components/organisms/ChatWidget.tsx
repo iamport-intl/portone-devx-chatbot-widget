@@ -8,7 +8,7 @@ import ChatButton from "../atoms/ChatButton"
 import InitialPrompts from "../molecules/InitialPrompts"
 import { assignUser, fetchConversations, sendMessage as apiSendMessage, deleteConversation } from "../../services/chatService"
 import ConversationHistory from "../organisms/ConversationHistory"
-import { Message, MessageMap, Conversation } from '@/types/chat'
+import { MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
 import { getAssetUrl } from '../../services/assetsService';
 import React from 'react';
@@ -80,28 +80,20 @@ export default function ChatWidget() {
     const messageText = messageOverride !== undefined ? messageOverride.trim() : input.trim();
     if (!messageText || !userId || isLoading) return;
     setIsLoading(true);
-    const userMessage: Message = { id: Date.now().toString(), sender: 'user', message: messageText, sentiment: "0", conversationId: conversationId };
-    // Generate a unique ID for the pending bot message.
+    const userMessage = { id: Date.now().toString(), sender: 'user', message: messageText, sentiment: "0", conversationId: conversationId } as const;
     const botMessageId = (Date.now() + 1).toString();
-    // Save the pending message id so it can be cancelled
     pendingMessageRef.current = botMessageId;
-
-    const initialBotMessage: Message = { id: botMessageId, sender: 'indicator', message: 'Typing...', sentiment: "0", conversationId: conversationId };
-
+    const initialBotMessage = { id: botMessageId, sender: 'indicator', message: 'Typing...', sentiment: "0", conversationId: conversationId } as const;
     setMessages((prev) => ({ ...prev, [userMessage.id]: userMessage, [initialBotMessage.id]: initialBotMessage }));
     setInput('');
-
-    // Create an AbortController so we can cancel the streaming request
     const controller = new AbortController();
     sendControllerRef.current = controller;
-
     try {
       const { content: botContent, conversationId: newConversationId } = await apiSendMessage(
         userId,
         userMessage.message,
         conversationId,
         (partial: string) => {
-          // Update the pending bot message on partial update
           setMessages((prev) => ({
             ...prev,
             [botMessageId]: { ...prev[botMessageId], sender: 'bot', message: partial },
@@ -109,16 +101,13 @@ export default function ChatWidget() {
         },
         controller.signal
       );
-
       setConversationId(newConversationId);
-
       setMessages((prev) => ({
         ...prev,
         [botMessageId]: { ...prev[botMessageId], sender: 'bot', message: botContent },
       }));
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        // Optionally remove the pending message from state
         setMessages((prev) => {
           const updated = { ...prev };
           delete updated[botMessageId];
@@ -142,7 +131,6 @@ export default function ChatWidget() {
 
   const handleCancelMessage = useCallback(() => {
     if (sendControllerRef.current && pendingMessageRef.current) {
-      // Abort the ongoing fetch request.
       sendControllerRef.current.abort();
     }
   }, []);
@@ -178,6 +166,13 @@ export default function ChatWidget() {
     }
   }, [handleSendMessage]);
 
+  const handleClose = useCallback(() => setOpen(false), []);
+  const handleSwitchToNew = useCallback(() => {
+    handleNewChatThread();
+    setShowHistory(false);
+  }, [handleNewChatThread]);
+  const handleSwitchToHistory = useCallback(() => setShowHistory(true), []);
+
   return (
     <>
       <ChatButton onClick={toggleChatOpen} />
@@ -185,12 +180,9 @@ export default function ChatWidget() {
         <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
-            onClose={() => setOpen(false)}
-            onSwitchToNew={() => {
-              handleNewChatThread();
-              setShowHistory(false);
-            }}
-            onSwitchToHistory={() => setShowHistory(true)}
+            onClose={handleClose}
+            onSwitchToNew={handleSwitchToNew}
+            onSwitchToHistory={handleSwitchToHistory}
             showHistoryTab={conversationHistory.length > 0}
           />
           {showHistory ? (
