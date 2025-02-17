@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:webpack": "next build && next export && webpack --mode production --config webpack.config.js"
+    "build:webpack": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
