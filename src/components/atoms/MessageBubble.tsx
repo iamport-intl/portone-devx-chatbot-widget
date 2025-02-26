@@ -94,6 +94,7 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
       ) : sender === 'indicator' ? (
         <Image
           src={getAssetUrl("typing.gif")}
+          unoptimized
           alt="Typing..."
           width={20}
           height={15}
