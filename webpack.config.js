@@ -71,10 +71,23 @@ module.exports = {
                     },
                 },
             },
-            // Add this new rule to process CSS files
+            // Updated CSS rule:
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
+                use: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            // Use the default string ('head') so style-loader
+                            // inserts styles into document.head.
+                            insert: 'head',
+                            // Add a custom attribute so we can identify these styles later.
+                            attributes: { 'data-chat-widget': 'true' },
+                        },
+                    },
+                    'css-loader',
+                    'postcss-loader'
+                ],
             },
         ],
     },
