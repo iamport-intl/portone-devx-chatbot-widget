@@ -24,13 +24,13 @@ jobs:
         run: |
           echo "Current branch: $GITHUB_REF"
           if [[ "$GITHUB_REF" == "refs/heads/production" ]]; then
-            echo "NODE_ENV=production" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
           elif [[ "$GITHUB_REF" == "refs/heads/staging" ]]; then
-            echo "NODE_ENV=staging" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
           elif [[ "$GITHUB_REF" == "refs/heads/development" ]]; then
-            echo "NODE_ENV=development" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
           else
-            echo "NODE_ENV=test" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=test" >> $GITHUB_ENV
           fi
 
       - name: Cache Node Modules
@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --include=dev
 
       - name: Setup Environment Variables
         run: |
@@ -57,6 +57,10 @@ jobs:
 
       - name: Build Widget using Webpack
         run: npm run build:webpack
+
+      - name: Set NODE_ENV for Deployment
+        run: echo "NODE_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
+        # Set NODE_ENV only after build is complete
 
       - name: Deploy Changes
         run: |
