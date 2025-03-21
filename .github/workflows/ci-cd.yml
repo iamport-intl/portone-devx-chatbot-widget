@@ -48,10 +48,13 @@ jobs:
         run: |
           echo "Loading environment variables for branch ${GITHUB_REF}"
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
             cp .env.production .env
           elif [ "${GITHUB_REF}" == "refs/heads/staging" ]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
             cp .env.staging .env
           else
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
             cp .env.development .env
           fi
 
