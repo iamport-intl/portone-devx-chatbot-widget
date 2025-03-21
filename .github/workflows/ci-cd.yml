@@ -14,11 +14,32 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js Environment
         uses: actions/setup-node@v3
         with:
           node-version: '22'
+
+      - name: Setup Environment Variables
+        run: |
+          echo "Current branch: $GITHUB_REF"
+          if [[ "$GITHUB_REF" == "refs/heads/production" ]]; then
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+            cp .env.production .env || echo "Warning: .env.production file not found"
+          elif [[ "$GITHUB_REF" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+            cp .env.staging .env || echo "Warning: .env.staging file not found"
+          elif [[ "$GITHUB_REF" == "refs/heads/development" ]]; then
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
+            cp .env.development .env || echo "Warning: .env.development file not found"
+          else
+            echo "DEPLOY_ENV=test" >> $GITHUB_ENV
+            cp .env.test .env || echo "Warning: .env.test file not found"
+          fi
+          echo "NODE_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
 
       - name: Cache Node Modules
         uses: actions/cache@v3
@@ -31,58 +52,21 @@ jobs:
       - name: Install Dependencies
         run: npm install --include=dev
 
-      - name: Setup Environment Variables
-        run: |
-          echo "Loading environment variables for branch ${GITHUB_REF}"
-          if [ "${GITHUB_REF}" == "refs/heads/production" ]; then
-            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
-            cp .env.production .env
-          elif [ "${GITHUB_REF}" == "refs/heads/staging" ]; then
-            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
-            cp .env.staging .env
-          elif [ "${GITHUB_REF}" == "refs/heads/development" ]; then
-            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
-            cp .env.development .env
-          else
-            echo "DEPLOY_ENV=test" >> $GITHUB_ENV
-            cp .env.test .env
-          fi
-
       - name: Build Widget using Webpack
         run: npm run build:webpack
-
-      - name: Set NODE_ENV for Deployment
-        run: echo "NODE_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
-        # Set NODE_ENV only after build is complete
-
-      - name: Deploy Changes
-        run: |
-          echo "Deploying changes for branch: ${GITHUB_REF}"
-          if [ "${GITHUB_REF}" == "refs/heads/production" ]; then
-            echo "Deploying to Production Environment"
-          elif [ "${GITHUB_REF}" == "refs/heads/staging" ]; then
-            echo "Deploying to Staging Environment"
-          elif [ "${GITHUB_REF}" == "refs/heads/development" ]; then
-            echo "Deploying to Development Environment"
-          else
-            echo "Deploying to Test Environment"
-          fi
 
       - name: Commit Generated Public Files
         run: |
           echo "Preparing to commit changes in public folder..."
-          # Configure Git user details.
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
-
-          # Stage the public folder only.
+          
           git add public/
-
-          # Check for changes in the public folder only.
+          
           if git diff-index --quiet HEAD -- public/; then
             echo "No changes detected in the public folder. Skipping commit."
           else
             echo "Changes detected in public folder. Committing..."
             git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF} [skip ci]"
-            git push
+            git push origin HEAD:${GITHUB_REF#refs/heads/}
           fi
