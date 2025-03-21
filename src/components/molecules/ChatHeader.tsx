@@ -39,7 +39,7 @@ const ChatHeader = ({
         </button>
       </div>
       {(onSwitchToNew || (onSwitchToHistory && showHistoryTab)) && (
-        <nav aria-label="Chat Navigation">
+        <nav aria-label="Chat Navigation" className="!ml-0">
           <div className="flex">
             {showHistoryTab && onSwitchToHistory && (
               <button
