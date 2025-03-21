@@ -53,7 +53,7 @@ jobs:
         run: npm install --include=dev
 
       - name: Build Widget using Webpack
-        run: npm run build:webpack
+        run: NODE_ENV=$NODE_ENV npm run build:webpack
 
       - name: Commit Generated Public Files
         run: |
@@ -70,3 +70,8 @@ jobs:
             git commit -m "chore: update public folder with generated files for branch ${GITHUB_REF} [skip ci]"
             git push origin HEAD:${GITHUB_REF#refs/heads/}
           fi
+
+      - name: Debug Webpack Env
+        run: |
+          echo "const path = require('path'); console.log('NODE_ENV:', process.env.NODE_ENV); process.exit(0);" > debug.js
+          node debug.js
