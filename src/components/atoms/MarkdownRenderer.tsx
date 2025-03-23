@@ -52,12 +52,24 @@ function CodeBlock({ inline, className, children, ...props }: any) {
   }
 }
 
+function LinkRenderer(props: any) {
+  return (
+    <a href={props.href} target="_blank" rel="noopener noreferrer" {...props}>
+      {props.children}
+    </a>
+  );
+}
+
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
     <div className="prose max-w-none break-words whitespace-normal mb-2">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        components={{ code: CodeBlock }}>
+        rehypePlugins={[rehypeRaw]}
+        components={{ 
+          code: CodeBlock,
+          a: LinkRenderer
+        }}>
         {content}
       </ReactMarkdown>
     </div>
