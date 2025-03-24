@@ -102,3 +102,30 @@
     background-color: #fc6b2d1a;
   }
 }
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .chat-widget-root-hgnj {
+    /* Take up more space on mobile */
+    .chat-bubble-user,
+    .chat-bubble-bot {
+      max-width: 90%;
+      padding: 0.5rem;
+    }
+    
+    /* Smaller font for mobile */
+    .prose {
+      font-size: 0.9rem;
+    }
+    
+    /* Adjust feedback buttons position */
+    .feedback-btns {
+      bottom: -12px;
+    }
+    
+    /* Adjust header padding */
+    .bg-[#fc6b2d] {
+      padding: 0.75rem;
+    }
+  }
+}
