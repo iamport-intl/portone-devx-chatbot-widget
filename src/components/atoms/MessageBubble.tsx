@@ -7,7 +7,16 @@ import Image from 'next/image';
 
 const MarkdownRenderer = dynamic(() => import('./MarkdownRenderer'), { 
   ssr: false, 
-  loading: () => <p>Loading...</p> 
+  loading: () => <div className="animate-pulse">
+       <Image
+          src={getAssetUrl("typing.gif")}
+          unoptimized
+          alt="Typing..."
+          width={20}
+          height={15}
+          style={{ objectFit: 'contain', imageRendering: 'auto' }}
+        />
+  </div>
 });
 
 export type MessageBubbleProps = {
