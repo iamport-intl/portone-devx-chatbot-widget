@@ -13,7 +13,7 @@ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
         type="button"
         onClick={onClick}
         style={style}
-        className="fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none"
+        className="fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none group"
         aria-label="Open chat"
       >
         <Image
@@ -22,6 +22,7 @@ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
           width={100}
           height={70}
           priority
+          className="transition-transform duration-300 ease-in-out group-hover:scale-110"
         />
       </button>
     );
