@@ -40,8 +40,8 @@ export default function ConversationHistory({
   onDeleteConversation,
 }: ConversationHistoryProps) {
   return (
-    <div className="overflow-y-auto flex-1 conversation-history flex items-center">
-      <div className="w-full flex flex-col gap-2 bg-white p-4 rounded-lg mt-14">
+    <div className="overflow-y-auto flex-1 conversation-history">
+      <div className="w-full flex flex-col gap-2 bg-white p-4 rounded-lg">
         {conversations.length === 0 ? (
           <div className="text-center">No conversations found.</div>
         ) : (
