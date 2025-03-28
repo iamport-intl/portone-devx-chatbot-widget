@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { getAssetUrl } from '@/services/assetsService';
 
@@ -8,12 +8,21 @@ type ChatButtonProps = {
 };
 
 const ChatButton = ({ onClick, style }: ChatButtonProps) => {
+    const [isClicked, setIsClicked] = useState(false);
+
+    const handleClick = () => {
+        setIsClicked(true);
+        onClick();
+    };
+
     return (
       <button
         type="button"
-        onClick={onClick}
+        onClick={handleClick}
         style={style}
-        className="fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none group"
+        className={`fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none ${
+          !isClicked ? 'bounce-animation' : ''
+        }`}
         aria-label="Open chat"
       >
         <Image

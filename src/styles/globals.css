@@ -83,7 +83,7 @@
 
   .feedback-btns {
     position: absolute;
-    bottom: -15px;
+    bottom: 0px;
     left: 10px;
   }
 
@@ -120,12 +120,27 @@
     
     /* Adjust feedback buttons position */
     .feedback-btns {
-      bottom: -12px;
+      bottom: 0px;
     }
     
     /* Adjust header padding */
-    .bg-[#fc6b2d] {
+    /* .bg-[#fc6b2d] {
       padding: 0.75rem;
-    }
+    } */
   }
+}
+
+/* Add this animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Add this class */
+.bounce-animation {
+  animation: bounce 1.5s ease-in-out infinite;
 }
