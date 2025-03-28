@@ -11,6 +11,7 @@ const PromptCard = ({ text, onClick }: PromptCardProps) => {
       type="button"
       onClick={onClick}
       className="bg-gray-50 p-4 rounded-lg cursor-pointer hover:bg-gray-100 text-left focus:outline-none"
+      style={{lineHeight:"20px"}}
       aria-label={text}
     >
       {text}
