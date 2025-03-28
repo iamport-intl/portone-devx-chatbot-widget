@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 
 // Load environment variables based on the current NODE_ENV.
 const envResult = dotenv.config({
+    path: `.env`,
+}) || dotenv.config({
     path: `.env.${process.env.NODE_ENV || 'test'}`,
 });
 if (envResult.error) {
