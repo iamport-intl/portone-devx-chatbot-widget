@@ -1,8 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 .chat-widget-root-hgnj {
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+
   position: fixed;
   bottom: 0;
   right: 0;
@@ -128,19 +129,19 @@
       padding: 0.75rem;
     } */
   }
+  /* Add this animation */
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Add this class */
+  .bounce-animation {
+    animation: bounce 1.5s ease-in-out infinite;
+  }
 }
 
-/* Add this animation */
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Add this class */
-.bounce-animation {
-  animation: bounce 1.5s ease-in-out infinite;
-}
