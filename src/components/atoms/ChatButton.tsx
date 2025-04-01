@@ -20,7 +20,7 @@ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
         type="button"
         onClick={handleClick}
         style={style}
-        className={`fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none ${
+        className={`fixed bottom-0 right-0 m-8 cursor-pointer focus:outline-none ${
           !isClicked ? 'bounce-animation' : ''
         }`}
         aria-label="Open chat"

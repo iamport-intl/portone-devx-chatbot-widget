@@ -65,6 +65,16 @@ function LinkRenderer({ href, children, ...rest }: any) {
   );
 }
 
+// Custom renderer for paragraphs
+function ParagraphRenderer({ children }: any) {
+  return (
+    <div>
+      <p>{children}</p>
+      <hr className="my-4" />
+    </div>
+  );
+}
+
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
     <div className="prose max-w-none break-words whitespace-normal mb-2">
@@ -72,7 +82,8 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         remarkPlugins={[remarkGfm]}
         components={{ 
           code: CodeBlock,
-          a: LinkRenderer
+          a: LinkRenderer,
+          p: ParagraphRenderer
         }}>
         {content}
       </ReactMarkdown>
