@@ -26,7 +26,7 @@ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
         aria-label="Open chat"
       >
         <Image
-          src={getAssetUrl("chat-intro.svg")}
+          src={getAssetUrl("chat-intro1.svg")}
           alt="Help"
           width={100}
           height={70}
