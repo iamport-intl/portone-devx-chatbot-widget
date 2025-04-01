@@ -30,8 +30,8 @@ export type MessageBubbleProps = {
 
 // Moved outside so it is not re-created on every render.
 const alignmentClasses = {
-  user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
-  bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
+  user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user !leading-relaxed',
+  bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot !pb-[30px] leading-relaxed',
   indicator: 'self-start ml-4'
 };
 

@@ -1,0 +1,177 @@
+diff --git a/src/components/atoms/ChatButton.tsx b/src/components/atoms/ChatButton.tsx
+index 5389e0e..2e58adb 100644
+--- a/src/components/atoms/ChatButton.tsx
++++ b/src/components/atoms/ChatButton.tsx
+@@ -1,4 +1,4 @@
+-import React from 'react';
++import React, { useState } from 'react';
+ import Image from 'next/image';
+ import { getAssetUrl } from '@/services/assetsService';
+ 
+@@ -8,12 +8,21 @@ type ChatButtonProps = {
+ };
+ 
+ const ChatButton = ({ onClick, style }: ChatButtonProps) => {
++    const [isClicked, setIsClicked] = useState(false);
++
++    const handleClick = () => {
++        setIsClicked(true);
++        onClick();
++    };
++
+     return (
+       <button
+         type="button"
+-        onClick={onClick}
++        onClick={handleClick}
+         style={style}
+-        className="fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none"
++        className={`fixed bottom-0 right-0 m-2 cursor-pointer focus:outline-none ${
++          !isClicked ? 'bounce-animation' : ''
++        }`}
+         aria-label="Open chat"
+       >
+         <Image
+diff --git a/src/components/atoms/MarkdownRenderer.tsx b/src/components/atoms/MarkdownRenderer.tsx
+index 6302132..db4abc3 100644
+--- a/src/components/atoms/MarkdownRenderer.tsx
++++ b/src/components/atoms/MarkdownRenderer.tsx
+@@ -3,7 +3,6 @@ import ReactMarkdown from 'react-markdown';
+ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+ import remarkGfm from 'remark-gfm';
+-import rehypeRaw from 'rehype-raw';
+ 
+ type MarkdownRendererProps = {
+   content: string;
+@@ -52,12 +51,29 @@ function CodeBlock({ inline, className, children, ...props }: any) {
+   }
+ }
+ 
++function LinkRenderer({ href, children, ...rest }: any) {
++  return (
++    <a
++      href={href}
++      target="_blank"
++      rel="noopener noreferrer"
++      className="underline cursor-pointer"
++      {...rest}
++    >
++      {children}
++    </a>
++  );
++}
++
+ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+   return (
+     <div className="prose max-w-none break-words whitespace-normal mb-2">
+       <ReactMarkdown
+         remarkPlugins={[remarkGfm]}
+-        components={{ code: CodeBlock }}>
++        components={{ 
++          code: CodeBlock,
++          a: LinkRenderer
++        }}>
+         {content}
+       </ReactMarkdown>
+     </div>
+diff --git a/src/components/atoms/MessageBubble.tsx b/src/components/atoms/MessageBubble.tsx
+index 8937f1d..bc55d25 100644
+--- a/src/components/atoms/MessageBubble.tsx
++++ b/src/components/atoms/MessageBubble.tsx
+@@ -22,7 +22,7 @@ export type MessageBubbleProps = {
+ // Moved outside so it is not re-created on every render.
+ const alignmentClasses = {
+   user: 'self-end bg-[#fc6b2d1a] mr-4 chat-bubble-user',
+-  bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot',
++  bot: 'self-start bg-gray-50 ml-4 chat-bubble-bot pb-[30px] leading-relaxed',
+   indicator: 'self-start ml-4'
+ };
+ 
+diff --git a/src/components/molecules/ChatHeader.tsx b/src/components/molecules/ChatHeader.tsx
+index 327af71..fb57aa9 100644
+--- a/src/components/molecules/ChatHeader.tsx
++++ b/src/components/molecules/ChatHeader.tsx
+@@ -39,7 +39,7 @@ const ChatHeader = ({
+         </button>
+       </div>
+       {(onSwitchToNew || (onSwitchToHistory && showHistoryTab)) && (
+-        <nav aria-label="Chat Navigation">
++        <nav aria-label="Chat Navigation" className="!ml-0">
+           <div className="flex">
+             {showHistoryTab && onSwitchToHistory && (
+               <button
+diff --git a/src/components/organisms/ChatWidget.tsx b/src/components/organisms/ChatWidget.tsx
+index 1d19362..a4cb211 100644
+--- a/src/components/organisms/ChatWidget.tsx
++++ b/src/components/organisms/ChatWidget.tsx
+@@ -177,7 +177,7 @@ export default function ChatWidget() {
+     <>
+       <ChatButton onClick={toggleChatOpen} />
+       {open && (
+-        <div className="fixed bottom-20 right-4 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
++        <div className="fixed bottom-12 right-2 md:bottom-20 md:right-4 w-[95vw] md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+           <ChatHeader
+             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
+             onClose={handleClose}
+diff --git a/src/styles/globals.css b/src/styles/globals.css
+index df87e99..0c7cfbd 100644
+--- a/src/styles/globals.css
++++ b/src/styles/globals.css
+@@ -83,7 +83,7 @@
+ 
+   .feedback-btns {
+     position: absolute;
+-    bottom: -15px;
++    bottom: 0px;
+     left: 10px;
+   }
+ 
+@@ -101,4 +101,46 @@
+   .feedback-btn.active {
+     background-color: #fc6b2d1a;
+   }
++}
++
++/* Mobile responsiveness */
++@media (max-width: 640px) {
++  .chat-widget-root-hgnj {
++    /* Take up more space on mobile */
++    .chat-bubble-user,
++    .chat-bubble-bot {
++      max-width: 90%;
++      padding: 0.5rem;
++    }
++    
++    /* Smaller font for mobile */
++    .prose {
++      font-size: 0.9rem;
++    }
++    
++    /* Adjust feedback buttons position */
++    .feedback-btns {
++      bottom: 0px;
++    }
++    
++    /* Adjust header padding */
++    /* .bg-[#fc6b2d] {
++      padding: 0.75rem;
++    } */
++  }
++}
++
++/* Add this animation */
++@keyframes bounce {
++  0%, 100% {
++    transform: translateY(0);
++  }
++  50% {
++    transform: translateY(-10px);
++  }
++}
++
++/* Add this class */
++.bounce-animation {
++  animation: bounce 1.5s ease-in-out infinite;
+ }
+\ No newline at end of file
