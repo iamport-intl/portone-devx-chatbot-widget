@@ -265,9 +265,9 @@ export default function ChatWidget() {
           </div>
           <div className="bg-white p-4 flex-1">
             <div className="my-4 flex justify-center space-x-2">
-              <button onClick={() => setInitialLoad(true)} className="bg-gray-200 p-2 rounded-lg">Chat now with PortOne ChatBot (Beta) 💬</button>
+              <button onClick={() => setInitialLoad(true)} className="bg-gray-200 p-2 rounded-lg">Chat now with PortOne ChatBot 💬</button>
             </div>
-            <p className="text-gray-600 font-sm mt-10 text-center">
+            <p className="text-gray-600 font-sm mt-10 text-center leading-[25px]">
               Messages you send are received by PortOne ChatBot (Beta) & Qualified for this conversation. Your use of this tool is subject to PortOne ChatBot's User.
             </p>
           </div>
