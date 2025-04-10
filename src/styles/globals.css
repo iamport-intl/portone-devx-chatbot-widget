@@ -1,9 +1,12 @@
 
+
 .chat-widget-root-hgnj {
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
-
+  
+  
+  
   position: fixed;
   bottom: 0;
   right: 0;

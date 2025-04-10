@@ -13,6 +13,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "next": "15.2.3",
+    "postcss-prefix-selector": "^2.1.1",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -44,6 +45,7 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5",
     "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "@thedutchcoder/postcss-rem-to-px": "^0.0.2"
   }
 }
