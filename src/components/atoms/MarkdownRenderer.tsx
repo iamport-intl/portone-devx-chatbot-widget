@@ -69,8 +69,7 @@ function LinkRenderer({ href, children, ...rest }: any) {
 function ParagraphRenderer({ children }: any) {
   return (
     <div>
-      <p>{children}</p>
-      <hr className="my-4" />
+      <p className='mb-4'>{children}</p>
     </div>
   );
 }
