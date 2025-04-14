@@ -2,10 +2,12 @@ import PromptCard from '../atoms/PromptCard';
 import React from 'react';
 
 type InitialPromptsProps = {
+  prompts: string[]; // Accept prompts as a prop
   onSelectPrompt?: (prompt: string) => void;
 };
 
-const prompts = [
+// Export the original list for fallback usage
+export const FALLBACK_PROMPTS = [
   "Which type of account is right for my business?",
   "How do I find and securely store my PortOne API keys and secret keys after creating my account?",
   "What are the different integration types offered by PortOne (web, mobile, plugins, API), and which one is best suited for my platform? How do I choose the best type for my business?",
@@ -33,7 +35,7 @@ const prompts = [
   "How does the PortOne Reconciliation feature work, and how can I configure it for my business?",
   "How do I use the PortOne Ingestion tool to upload my transaction data?",
   "How do I create invoices through the PortOne Admin console, including using invoice templates and bulk uploads?",
-  "How do I view and manage individual invoice details within the PortOne Admin console?",  
+  "How do I view and manage individual invoice details within the PortOne Admin console?",
   "What are the different error codes returned by the PortOne APIs? How can I troubleshoot common errors?",
   "What are the differences between a Single Merchant and a Master Merchant account?",
   "How to integrate portone web sdk in my website? Give me a step by step guide.",
@@ -42,16 +44,18 @@ const prompts = [
 ];
 
 export default function InitialPrompts({
+  prompts, // Use the prompts passed via props
   onSelectPrompt,
 }: InitialPromptsProps) {
-  // Memoize prompt selection to only calculate once on mount
-  const selectedPrompts = React.useMemo(() => {
-    return prompts.sort(() => Math.random() - 0.5).slice(0, 3);
-  }, []); // Empty dependency array ensures this only runs once
+  // Removed the internal selection logic
+  // const selectedPrompts = React.useMemo(() => {
+  //   return prompts.sort(() => Math.random() - 0.5).slice(0, 3);
+  // }, []); // Empty dependency array ensures this only runs once
 
   return (
     <div className="initial-prompts space-y-2 mb-4 px-4 flex flex-col overflow-y-auto">
-      {selectedPrompts.map((prompt, index) => (
+      {/* Render the prompts received from props */}
+      {prompts.map((prompt, index) => (
         <PromptCard
           key={index}
           text={prompt}
@@ -61,6 +65,7 @@ export default function InitialPrompts({
     </div>
   );
 }
+// Removed previous implementation comments
 //   // select 3 random prompts
 //   const selectedPrompts = prompts.sort(() => Math.random() - 0.5).slice(0, 3);
 //   return (

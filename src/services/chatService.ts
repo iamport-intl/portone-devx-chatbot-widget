@@ -108,3 +108,36 @@ export async function deleteConversation(conversationId: string): Promise<void> 
     throw new Error(`Failed to delete conversation: ${conversationId}`);
   }
 }
+
+// Function to fetch starter questions based on the current path.
+export async function fetchStarterQuestions(path: string): Promise<{ questions: string[] }> {
+  // Ensure the path starts with a '/'
+  const formattedPath = path.startsWith('/') ? path : `/${path}`;
+  const apiUrl = `${API_BASE}/api/starter-questions?path=${encodeURIComponent(formattedPath)}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      // Even though the backend aims for 200, handle potential network/server errors.
+      console.error(`HTTP error fetching starter questions: ${response.status}`);
+      // Return fallback structure on error to avoid breaking the caller
+      return { questions: [] }; // Or potentially default questions if preferred
+    }
+
+    const data = await response.json();
+    // Basic validation in case the API contract is violated
+    if (!data || !Array.isArray(data.questions) || data.questions.length === 0) {
+       console.error('Invalid response format from starter questions API');
+       return { questions: [] }; // Return empty to signal fallback
+    }
+    return data; // Expected: { questions: ["q1", "q2", "q3"] }
+  } catch (error) {
+    console.error('Network error fetching starter questions:', error);
+    // Return fallback structure on network error
+    return { questions: [] }; // Return empty to signal fallback
+  }
+}

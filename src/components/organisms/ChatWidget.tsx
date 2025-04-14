@@ -5,8 +5,8 @@ import ChatHeader from "../molecules/ChatHeader"
 import MessageList from "../molecules/MessageList"
 import InputField from "../atoms/InputField"
 import ChatButton from "../atoms/ChatButton"
-import InitialPrompts from "../molecules/InitialPrompts"
-import { assignUser, fetchConversations, sendMessage as apiSendMessage, deleteConversation } from "../../services/chatService"
+import InitialPrompts, { FALLBACK_PROMPTS } from "../molecules/InitialPrompts"
+import { assignUser, fetchConversations, sendMessage as apiSendMessage, deleteConversation, fetchStarterQuestions } from "../../services/chatService"
 import ConversationHistory from "../organisms/ConversationHistory"
 import { MessageMap, Conversation } from '@/types/chat'
 import CancelButton from '../atoms/CancelButton';
@@ -23,6 +23,8 @@ export default function ChatWidget() {
   const [conversationId, setConversationId] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Conversation[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [starterPrompts, setStarterPrompts] = useState<string[]>([]);
+  const [isPromptsLoading, setIsPromptsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   // Reference to hold the current abort controller for the sendMessage call.
@@ -51,7 +53,35 @@ export default function ChatWidget() {
     }
   }, []);
 
+  // Fetch starter questions on mount or when path changes (using location for now)
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      setIsPromptsLoading(true);
+      // Using window.location.pathname as the path source.
+      // Ensure this is appropriate for your application's routing.
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+      try {
+        const { questions } = await fetchStarterQuestions(currentPath);
+        if (questions && questions.length > 0) {
+          setStarterPrompts(questions);
+        } else {
+          // Fallback if API returns empty or error
+          setStarterPrompts(FALLBACK_PROMPTS.sort(() => Math.random() - 0.5).slice(0, 3));
+        }
+      } catch (error) {
+        console.error("Error fetching starter prompts, using fallback:", error);
+        // Fallback on network error
+        setStarterPrompts(FALLBACK_PROMPTS.sort(() => Math.random() - 0.5).slice(0, 3));
+      } finally {
+        setIsPromptsLoading(false);
+      }
+    };
+
+    fetchPrompts();
+  }, []); // Dependency array is empty, runs once on mount. Add dependencies if path can change dynamically.
+
   const handleSelectConversation = useCallback((conversation: Conversation) => {
+    handleCancelMessage();
     setConversationId(conversation.conversation_id);
     const mappedMessages: MessageMap = {};
     Object.values(conversation.messages).forEach((msg) => {
@@ -137,6 +167,7 @@ export default function ChatWidget() {
 
   // New functionality: Create a new chat thread
   const handleNewChatThread = useCallback(() => {
+    handleCancelMessage();
     // Reset conversation and clear previous messages and input.
     setShowHistory(false);
     setConversationId('');
@@ -175,9 +206,11 @@ export default function ChatWidget() {
 
   return (
     <>
-      <ChatButton onClick={toggleChatOpen} />
+      {/* Only show the ChatButton when prompts are loaded */}
+      {!isPromptsLoading && <ChatButton onClick={toggleChatOpen} />}
+
       {open && (
-        <div className="fixed bottom-12 right-2 md:bottom-20 md:right-4 md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-12 right-2 w-[calc(100vw-1rem)] max-w-md h-[80vh] max-h-[600px] md:bottom-20 md:right-4 md:w-96 md:h-[600px] md:max-w-none bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
             onClose={handleClose}
@@ -194,8 +227,11 @@ export default function ChatWidget() {
           ) : (
             <>
               <MessageList messages={Object.values(messages || {})} endRef={messagesEndRef} />
-              {!Object.values(messages || {}).some(msg => msg.sender === 'user') && (
-                <InitialPrompts onSelectPrompt={handleSelectPrompt} />
+              {!Object.values(messages || {}).some(msg => msg.sender === 'user') && !isPromptsLoading && starterPrompts.length > 0 && (
+                <InitialPrompts prompts={starterPrompts} onSelectPrompt={handleSelectPrompt} />
+              )}
+              {isPromptsLoading && (
+                 <div className="p-4 text-center text-gray-500">Loading suggestions...</div>
               )}
               <div className="p-4 bg-white border-t">
                 <div className="flex items-center gap-2">

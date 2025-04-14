@@ -57,7 +57,7 @@ function LinkRenderer({ href, children, ...rest }: any) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="underline cursor-pointer"
+      className="underline cursor-pointer text-blue-500"
       {...rest}
     >
       {children}
