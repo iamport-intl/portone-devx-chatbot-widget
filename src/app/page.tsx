@@ -1,7 +1,14 @@
 'use client';
 
 import ChatPage from '@/pages/ChatPage';
+import ChatTemplate from '../templates/ChatTemplate';
 
-export default function Home() {
-  return <ChatPage />;
+// Define props type
+type HomeProps = {
+  initialPath: string;
+};
+
+export default function Home({ initialPath }: HomeProps) {
+  // Pass initialPath to ChatTemplate
+  return <ChatTemplate initialPath={initialPath} />;
 }
