@@ -86,7 +86,7 @@ export default function ChatWidget() {
     };
 
     fetchPrompts();
-  }, []); // Dependency array is empty, runs once on mount. Add dependencies if path can change dynamically.
+  }, [typeof window !== 'undefined' ? window.location.pathname : '']);
 
   const handleSelectConversation = useCallback((conversation: Conversation) => {
     handleCancelMessage();
