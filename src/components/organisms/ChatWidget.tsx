@@ -14,7 +14,18 @@ import { getAssetUrl } from '../../services/assetsService';
 import React from 'react';
 import Image from 'next/image';
 
-export default function ChatWidget() {
+// Define props type
+type ChatWidgetProps = {
+  initialPath: string;
+};
+
+export default function ChatWidget({ initialPath }: ChatWidgetProps) {
+  // Remove usePathname call
+  // const pathname = usePathname(); 
+  
+  // State to hold the current path, initialized from prop
+  const [currentPath, setCurrentPath] = useState(initialPath);
+  
   const [open, setOpen] = useState(false);
   const [initialLoad, setInitialLoad] = useState(false)
   const [messages, setMessages] = useState<MessageMap>({});
@@ -61,15 +72,33 @@ export default function ChatWidget() {
     }
   }, []);
 
-  // Fetch starter questions on mount or when path changes (using location for now)
+  // Listen for external path changes communicated via custom event
+  useEffect(() => {
+    const handlePathChange = (event: Event) => {
+      // Check if it's a CustomEvent and has the detail property
+      if (event instanceof CustomEvent && event.detail && typeof event.detail.path === 'string') {
+        const newPath = event.detail.path;
+        setCurrentPath(newPath);
+      }
+    };
+
+    window.addEventListener('widgetpathchange', handlePathChange);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('widgetpathchange', handlePathChange);
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  // Fetch starter questions on mount or when path changes
   useEffect(() => {
     const fetchPrompts = async () => {
+      // Reset messages when path changes to show new prompts
+      setMessages({}); 
       setIsPromptsLoading(true);
-      // Using window.location.pathname as the path source.
-      // Ensure this is appropriate for your application's routing.
-      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+      // Use the currentPath state variable
       try {
-        const { questions } = await fetchStarterQuestions(currentPath);
+        const { questions } = await fetchStarterQuestions(currentPath || '/');
         if (questions && questions.length > 0) {
           setStarterPrompts(questions);
         } else {
@@ -86,7 +115,7 @@ export default function ChatWidget() {
     };
 
     fetchPrompts();
-  }, [typeof window !== 'undefined' ? window.location.pathname : '']);
+  }, [currentPath]); // Depend on the currentPath state
 
   const handleSelectConversation = useCallback((conversation: Conversation) => {
     handleCancelMessage();

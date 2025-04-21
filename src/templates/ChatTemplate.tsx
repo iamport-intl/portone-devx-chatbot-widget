@@ -2,10 +2,16 @@
 
 import ChatWidget from '@/components/organisms/ChatWidget';
 
-export default function ChatTemplate() {
+// Define props type
+type ChatTemplateProps = {
+  initialPath: string;
+};
+
+export default function ChatTemplate({ initialPath }: ChatTemplateProps) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <ChatWidget />
+      {/* Pass initialPath to ChatWidget */}
+      <ChatWidget initialPath={initialPath} />
     </div>
   );
 }
