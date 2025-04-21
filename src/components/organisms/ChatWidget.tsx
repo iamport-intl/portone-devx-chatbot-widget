@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import ChatHeader from "../molecules/ChatHeader"
 import MessageList from "../molecules/MessageList"
 import InputField from "../atoms/InputField"
@@ -15,6 +16,7 @@ import React from 'react';
 import Image from 'next/image';
 
 export default function ChatWidget() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<MessageMap>({});
   const [input, setInput] = useState('');
@@ -53,13 +55,12 @@ export default function ChatWidget() {
     }
   }, []);
 
-  // Fetch starter questions on mount or when path changes (using location for now)
+  // Fetch starter questions on mount or when path changes
   useEffect(() => {
     const fetchPrompts = async () => {
       setIsPromptsLoading(true);
-      // Using window.location.pathname as the path source.
-      // Ensure this is appropriate for your application's routing.
-      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+      // Use the pathname from the hook
+      const currentPath = pathname || '/';
       try {
         const { questions } = await fetchStarterQuestions(currentPath);
         if (questions && questions.length > 0) {
@@ -78,7 +79,7 @@ export default function ChatWidget() {
     };
 
     fetchPrompts();
-  }, [typeof window !== 'undefined' ? window.location.pathname : '']);
+  }, [pathname]);
 
   const handleSelectConversation = useCallback((conversation: Conversation) => {
     handleCancelMessage();
