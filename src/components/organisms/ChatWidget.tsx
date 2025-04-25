@@ -253,10 +253,10 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
       {!isPromptsLoading && <ChatButton onClick={toggleChatOpen} />}
 
       {open && (
-        <div className="fixed bottom-8 right-2 w-[calc(100vw-1rem)] max-w-md h-[80vh] max-h-[600px] md:bottom-9 md:right-4 md:w-96 md:h-[600px] md:max-w-none bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
-          {initialLoad ?
-          <>
-          <ChatHeader
+        <div className="fixed bottom-8 right-2 md:bottom-9 md:right-4 md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        {!initialLoad ? 
+        <>
+        <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
             onClose={handleClose}
             onSwitchToNew={handleSwitchToNew}

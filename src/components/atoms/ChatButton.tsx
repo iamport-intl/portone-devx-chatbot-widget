@@ -10,14 +10,14 @@ type ChatButtonProps = {
 const ChatButton = ({ onClick, style }: ChatButtonProps) => {
     const [isClicked, setIsClicked] = useState(false);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsClicked(true);
-            onClick();
-        }, 2000);
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         setIsClicked(true);
+    //         onClick();
+    //     }, 2000);
 
-        return () => clearTimeout(timer);
-    }, []);
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     const handleClick = () => {
         setIsClicked(true);
