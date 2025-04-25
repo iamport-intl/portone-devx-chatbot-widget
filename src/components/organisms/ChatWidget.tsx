@@ -27,6 +27,7 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
   const [currentPath, setCurrentPath] = useState(initialPath);
   
   const [open, setOpen] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(false)
   const [messages, setMessages] = useState<MessageMap>({});
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
   const [isPromptsLoading, setIsPromptsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   // Reference to hold the current abort controller for the sendMessage call.
   const sendControllerRef = useRef<AbortController | null>(null);
   // Reference to keep track of the pending bot message id (used for cancellation).
@@ -46,6 +48,12 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    // Initialize audio
+    audioRef.current = new Audio(getAssetUrl("chat-open.mp3"));
+    audioRef.current.volume = 0.5;
+  }, []);
 
   // On mount, check localStorage or assign new user.
   useEffect(() => {
@@ -165,6 +173,12 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
         ...prev,
         [botMessageId]: { ...prev[botMessageId], sender: 'bot', message: botContent },
       }));
+      
+      // Play sound when bot response is complete
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(err => console.log('Audio play failed:', err));
+      }
     } catch (error: any) {
       if (error.name === 'AbortError') {
         setMessages((prev) => {
@@ -239,8 +253,10 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
       {!isPromptsLoading && <ChatButton onClick={toggleChatOpen} />}
 
       {open && (
-        <div className="fixed bottom-12 right-2 w-[calc(100vw-1rem)] max-w-md h-[80vh] max-h-[600px] md:bottom-20 md:right-4 md:w-96 md:h-[600px] md:max-w-none bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
-          <ChatHeader
+        <div className="fixed bottom-8 right-2 md:bottom-9 md:right-4 md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        {!initialLoad ? 
+        <>
+        <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
             onClose={handleClose}
             onSwitchToNew={handleSwitchToNew}
@@ -288,6 +304,41 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
               </div>
             </>
           )}
+        </>
+        :
+        <>
+        <div className="flex flex-col w-full h-full">
+          <div className="bg-[#FF7628] p-6 flex-1 relative">
+            <button 
+              onClick={handleClose}
+              className="absolute top-2 right-2 p-2 rounded-full hover:bg-yellow-500 transition-colors"
+              aria-label="Close chat"
+            >
+              <Image
+                src={getAssetUrl("close.svg")}
+                alt="Close"
+                title="Close"
+                width={20}
+                height={20}
+                className="cursor-pointer"
+                priority
+              />
+            </button>
+            <p className="text-black font-semibold text-3xl mb-2">Hey there! 👋</p>
+            <p className="text-black text-xl">Hi, I am PortOne Chatbot (Beta),</p>
+            <p className="text-black text-lg">I can help clarify any questions you might have on the documentation</p>
+          </div>
+          <div className="bg-white p-4 flex-1">
+            <div className="my-4 flex justify-center space-x-2">
+              <button onClick={() => setInitialLoad(true)} className="bg-gray-200 p-2 rounded-lg">Chat now with PortOne ChatBot 💬</button>
+            </div>
+            <p className="text-gray-600 font-sm mt-10 text-center leading-[25px]">
+              Messages you send are received by PortOne ChatBot (Beta) & Qualified for this conversation. Your use of this tool is subject to PortOne ChatBot's User.
+            </p>
+          </div>
+        </div>
+        </>
+      }
         </div>
       )}
     </>
