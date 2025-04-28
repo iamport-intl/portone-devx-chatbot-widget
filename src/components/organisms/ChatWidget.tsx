@@ -253,10 +253,6 @@ export default function ChatWidget({ initialPath }: ChatWidgetProps) {
 
       {open && (
         <div className="fixed bottom-8 right-2 md:bottom-9 md:right-4 md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
-<<<<<<< HEAD
-        {!initialLoad ? 
-=======
->>>>>>> UiFixes
         <>
         <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
