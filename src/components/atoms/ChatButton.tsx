@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { getAssetUrl } from '@/services/assetsService';
 
@@ -9,15 +9,6 @@ type ChatButtonProps = {
 
 const ChatButton = ({ onClick, style }: ChatButtonProps) => {
     const [isClicked, setIsClicked] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsClicked(true);
-            onClick();
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     const handleClick = () => {
         setIsClicked(true);

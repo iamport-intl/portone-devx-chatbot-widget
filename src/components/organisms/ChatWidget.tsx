@@ -16,7 +16,6 @@ import Image from 'next/image';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(false)
   const [messages, setMessages] = useState<MessageMap>({});
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -192,7 +191,6 @@ export default function ChatWidget() {
       <ChatButton onClick={toggleChatOpen} />
       {open && (
         <div className="fixed bottom-8 right-2 md:bottom-9 md:right-4 md:w-96 h-[80vh] md:h-[600px] max-h-[600px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
-        {initialLoad ? 
         <>
         <ChatHeader
             title={showHistory ? "Conversation History" : process.env.APP_TITLE || 'PortOne'}
@@ -240,40 +238,6 @@ export default function ChatWidget() {
             </>
           )}
         </>
-        :
-        <>
-        <div className="flex flex-col w-full h-full">
-          <div className="bg-[#FF7628] p-6 flex-1 relative">
-            <button 
-              onClick={handleClose}
-              className="absolute top-2 right-2 p-2 rounded-full hover:bg-yellow-500 transition-colors"
-              aria-label="Close chat"
-            >
-              <Image
-                src={getAssetUrl("close.svg")}
-                alt="Close"
-                title="Close"
-                width={20}
-                height={20}
-                className="cursor-pointer"
-                priority
-              />
-            </button>
-            <p className="text-black font-semibold text-3xl mb-2">Hey there! 👋</p>
-            <p className="text-black text-xl">Hi, I am PortOne Chatbot (Beta),</p>
-            <p className="text-black text-lg">I can help clarify any questions you might have on the documentation</p>
-          </div>
-          <div className="bg-white p-4 flex-1">
-            <div className="my-4 flex justify-center space-x-2">
-              <button onClick={() => setInitialLoad(true)} className="bg-gray-200 p-2 rounded-lg">Chat now with PortOne ChatBot 💬</button>
-            </div>
-            <p className="text-gray-600 font-sm mt-10 text-center leading-[25px]">
-              Messages you send are received by PortOne ChatBot (Beta) & Qualified for this conversation. Your use of this tool is subject to PortOne ChatBot's User.
-            </p>
-          </div>
-        </div>
-        </>
-      }
         </div>
       )}
     </>
