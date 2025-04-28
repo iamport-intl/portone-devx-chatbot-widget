@@ -40,6 +40,7 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
   const normalizedSentiment = sentiment?.toString();
   const initialFeedback = normalizedSentiment === "positive" ? 'up' : normalizedSentiment === "negative" ? 'down' : null;
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(initialFeedback);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   // State to control expansion of the message.
   const [expanded, setExpanded] = useState(false);
@@ -51,6 +52,12 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
   if (sender === 'bot' && !isLatest && !expanded && message.length > TRUNCATE_LENGTH) {
     displayedMessage = message.slice(0, TRUNCATE_LENGTH) + '...';
   }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
 
   if (!message || message.length === 0) {
     return <div style={{ display: 'none' }} />;
@@ -98,6 +105,13 @@ const MessageBubble = ({ sender, message, conversationId, messageId, sentiment, 
             ) : (
               <button className="feedback-btn active cursor-pointer bg-gray-200 text-white p-1 rounded">👎</button>
             )}
+            <button
+              onClick={handleCopy}
+              className="copy-btn cursor-pointer hover:bg-gray-200 p-1 rounded"
+              title="Copy to clipboard"
+            >
+              {copySuccess ? "✓" : "📋"}
+            </button>
           </div>
         </>
       ) : sender === 'indicator' ? (
